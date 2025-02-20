@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "849745755586",
+    "project_id": "carcleanplus-1",
+    "storage_bucket": "carcleanplus-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849745755586:android:38484f8ccc0aef2b946a5b",
+        "android_client_info": {
+          "package_name": "com.codeservir.carceanplususer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3Da6J5KL7RIT2D3MgMmfSWmFkQ_4E6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849745755586:android:e3a4b889d80fddd8946a5b",
+        "android_client_info": {
+          "package_name": "com.codeservir.carcleanplus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3Da6J5KL7RIT2D3MgMmfSWmFkQ_4E6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849745755586:android:07ff9eec600967eb946a5b",
+        "android_client_info": {
+          "package_name": "com.codeservir.carcleanplus.new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3Da6J5KL7RIT2D3MgMmfSWmFkQ_4E6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849745755586:android:70ea5b4b5f406004946a5b",
+        "android_client_info": {
+          "package_name": "com.difmotechnologies.carcleanplu_user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3Da6J5KL7RIT2D3MgMmfSWmFkQ_4E6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849745755586:android:58899c75b3f1e1c2946a5b",
+        "android_client_info": {
+          "package_name": "com.example.car_clean_user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3Da6J5KL7RIT2D3MgMmfSWmFkQ_4E6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

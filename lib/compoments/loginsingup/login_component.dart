@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../authentication/otp_verificaion.dart';
+import '../../config/color_veriable.dart';
+import 'Password_screen.dart';
 
 class LoginSignupCard extends StatefulWidget {
   @override
@@ -7,84 +10,118 @@ class LoginSignupCard extends StatefulWidget {
 }
 
 class _LoginSignupCardState extends State<LoginSignupCard> {
-  final TextEditingController _phoneController = TextEditingController();
-  final FocusNode _phoneFocusNode = FocusNode();
+  final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  String? _validatePhoneNumber(String? value) {
+  String? _validateInput(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Phone number is required';
+      return 'Input is required';
     }
-    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return 'Please enter a valid phone number';
+    if (!RegExp(r'^[0-9]+$').hasMatch(value) && !RegExp(r'^[a-zA-Z0-9@.]+$').hasMatch(value)) {
+      return 'Please enter a valid input (Phone or Email)';
     }
     return null;
+  }
+  Future<void> _handleInput() async {
+    String input = _controller.text.trim();
+
+    // Check if input is a phone number or email
+    if (RegExp(r'^[0-9]+$').hasMatch(input)) {
+      String phoneNumber = '+91' + input; // India code
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await FirebaseAuth.instance.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print("Verification failed: ${e.message}");
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtpVerificationPage(verificationId: verificationId),
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print("Code Auto Retrieval Timeout");
+        },
+      );
+    } else if (RegExp(r'^[a-zA-Z0-9@.]+$').hasMatch(input)) {
+      // If input is an email, navigate to the signup screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PasswordScreen(email: input),
+        ),
+      );
+    } else {
+      // Invalid input case
+      print('Invalid phone or email');
+    }
   }
 
   @override
   void dispose() {
-    _phoneController.dispose();
-    _phoneFocusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get screen height and width
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      height: screenHeight * 0.8, // Adjust the height to 80% of screen height
+      height: screenHeight * 0.8,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30), // Circular top-left corner
-          topRight: Radius.circular(30), // Circular top-right corner
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.05), // Responsive padding
-        child: SingleChildScrollView( // Allow scrolling if content overflows
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.05,
+            vertical: screenHeight * 0.05
+        ),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               // Logo Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: screenWidth * 0.08, // Adjust the avatar size based on screen width
-                    backgroundColor: Colors.yellow,
-                    child: Text(
-                      "H",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+                  Image.asset(
+                    "assets/logo.png",
+                    width: screenWidth * 0.12,
+                    height: screenWidth * 0.12,
+                    fit: BoxFit.contain,
                   ),
                   SizedBox(width: screenWidth * 0.02),
                   Text(
-                    "HOORA",
+                    "CAR CLEAN PLUS",
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: AppColors.primary,
                     ),
                   ),
                 ],
               ),
               SizedBox(height: screenHeight * 0.03),
 
-              // Phone Number Section
+              // Phone/Email Section
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Phone Number",
+                    "Phone Number or Email",
                     style: TextStyle(
-                      color: Colors.red,
+                      color: AppColors.primary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -93,14 +130,13 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
                   Form(
                     key: _formKey,
                     child: TextFormField(
-                      controller: _phoneController,
-                      focusNode: _phoneFocusNode,
-                      keyboardType: TextInputType.phone,
+                      controller: _controller,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        hintText: "Please enter your phone number",
-                        prefixIcon: Icon(Icons.phone, color: Colors.grey),
+                        hintText: "Enter phone number or email",
+                        prefixIcon: Icon(Icons.person, color: AppColors.primary),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red, width: 1.5),
+                          borderSide: BorderSide(color: AppColors.primary, width: 1.5),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -109,7 +145,7 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
                         ),
                         contentPadding: EdgeInsets.symmetric(vertical: 12),
                       ),
-                      validator: _validatePhoneNumber,
+                      validator: _validateInput,
                     ),
                   ),
                 ],
@@ -119,10 +155,10 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
               // Login/Signup Button
               SizedBox(
                 width: double.infinity,
-                height: screenHeight * 0.07, // Adjust button height based on screen height
+                height: screenHeight * 0.07,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -131,12 +167,7 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OtpVerificationPage(),
-                        ),
-                      );
+                      _handleInput();
                     }
                   },
                   child: Text(
@@ -150,36 +181,6 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
                 ),
               ),
               SizedBox(height: screenHeight * 0.02),
-
-              // Terms and Privacy Policy Text
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                child: Text.rich(
-                  TextSpan(
-                    text: "By proceeding you agree to the ",
-                    style: TextStyle(fontSize: 14, color: Colors.black87),
-                    children: [
-                      TextSpan(
-                        text: "Terms & Conditions",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      TextSpan(text: " and "),
-                      TextSpan(
-                        text: "Privacy Policy",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.03),
             ],
           ),
         ),

@@ -1,6 +1,9 @@
+import 'package:car_clean_user/config/color_veriable.dart';
+// import 'package:car_clean_user/home/home_page.dart'; // Import HomePage
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../compoments/loginsingup/login_component.dart';
+import '../user_pages/user_home_page.dart';
 
 class LoginSignupScreen extends StatefulWidget {
   @override
@@ -17,6 +20,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     Future.delayed(Duration(milliseconds: 200), () {
       FocusScope.of(context).requestFocus(_phoneFocusNode);
     });
+    _checkUserLoggedIn(); // Check if the user is already logged in
   }
 
   @override
@@ -24,6 +28,18 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     _phoneController.dispose();
     _phoneFocusNode.dispose();
     super.dispose();
+  }
+
+  // Function to check if the user is logged in
+  _checkUserLoggedIn() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // If the user is logged in, navigate to HomePage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
   }
 
   @override
@@ -45,7 +61,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 60,
+                  top: 90,
                   right: 20,
                   child: Text(
                     "Premium Car & Bike Care",
@@ -53,12 +69,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                      backgroundColor: Colors.black54,
+                      backgroundColor: AppColors.primary.withOpacity(0.5),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 93,
+                  top: 120,
                   right: 20,
                   child: Text(
                     "at your Door-step!",
@@ -66,7 +82,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                      backgroundColor: Colors.black54,
+                      backgroundColor: AppColors.primary.withOpacity(0.5),
                     ),
                   ),
                 ),

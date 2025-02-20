@@ -32,6 +32,10 @@ dependencies:
     sdk: flutter
   permission_handler:
   carousel_slider:
+  firebase_core:
+  firebase_auth:
+  firebase_database:
+  cloud_firestore:
 #  flutter_vlc_player: ^7.4.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -70,6 +74,7 @@ flutter:
     - assets/nagpur.png
     - assets/newdelhi.png
     - assets/car_wash.jpg
+    - assets/logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
