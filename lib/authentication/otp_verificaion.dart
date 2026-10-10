@@ -1,190 +1,136 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
+import 'package:provider/provider.dart';
 
-import '../location/user_city_location.dart';
-import '../user_footer/footer.dart';
-
+import '../providers/auth_provider.dart';
+import '../services/auth_service.dart';
+import '../theme/brand_theme.dart';
+import '../utils/constants.dart';
 
 class OtpVerificationPage extends StatefulWidget {
+  const OtpVerificationPage({super.key});
+
   @override
-  _OtpVerificationPageState createState() => _OtpVerificationPageState();
+  State<OtpVerificationPage> createState() => _OtpVerificationPageState();
 }
 
 class _OtpVerificationPageState extends State<OtpVerificationPage> {
-  final TextEditingController _otpController = TextEditingController();
-  int _counter = 10;
-  late final Timer _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_counter > 0) {
-        setState(() {
-          _counter--;
-        });
-      } else {
-        timer.cancel();
-      }
-    });
-  }
+  final _phone = TextEditingController();
+  final _email = TextEditingController();
+  final _code = TextEditingController();
+  final _name = TextEditingController();
+  final _auth = AuthService();
+  bool _sent = false;
+  bool _busy = false;
 
   @override
   void dispose() {
-    _timer.cancel();
-    _otpController.dispose();
+    _phone.dispose();
+    _email.dispose();
+    _code.dispose();
+    _name.dispose();
     super.dispose();
   }
 
-  Widget _buildOtpBox({required bool isFocused}) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: isFocused ? Colors.black : Colors.grey,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: TextField(
-          controller: _otpController,
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          inputFormatters: [LengthLimitingTextInputFormatter(1)],
-          style: const TextStyle(fontSize: 20),
-          decoration: const InputDecoration(border: InputBorder.none),
-        ),
-      ),
-    );
+  Future<void> _send() async {
+    setState(() => _busy = true);
+    try {
+      final message = await _auth.requestOtp(
+        _phone.text.trim(),
+        email: _email.text.trim(),
+      );
+      if (!mounted) return;
+      setState(() => _sent = true);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _verify() async {
+    setState(() => _busy = true);
+    final ok = await context.read<AuthProvider>().verifyOtp(
+          _phone.text.trim(),
+          _code.text.trim(),
+          _name.text.trim(),
+        );
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (!ok) {
+      final message = context.read<AuthProvider>().error ?? 'Could not sign in';
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text("OTP", style: TextStyle(color: Colors.black)),
-      ),
-      body: Center(  // Center the entire body content
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,  // Vertically center the content
-            children: [
-              const SizedBox(height: 30),
-              const Text(
-                "Enter Verification Code",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "We have sent you a 6 digit verification code on",
-                style: TextStyle(color: Colors.grey),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "+91-94543-10605",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit, size: 16, color: Colors.grey),
-                    onPressed: () {
-                      // Handle edit phone number
-                    },
-                  ),
-                ],
-              ),
-              const Text(
-                "via SMS",
-                style: TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(
-                  6,
-                      (index) => _buildOtpBox(isFocused: index == 0),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Didn't receive the code?",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _counter > 0 ? "Wait | $_counter" : "Resend",
-                    style: TextStyle(
-                      color: _counter > 0 ? Colors.black : Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SelectCityPage()
-                        )
-                    );
-                  },
-                  child: Text('next 1')
-              ),
-              ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CarCleaningBottomNav()
-                        )
-                    );
-                  },
-                  child: Text('next 2')
-              ),
-              const Spacer(),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 16.0),
-                child: Text(
-                  "HOORA",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    letterSpacing: 2,
-                  ),
-                ),
-              ),
-            ],
+      appBar: AppBar(title: const Text('Phone code')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const BrandIconWell(icon: Icons.sms_outlined),
+          const SizedBox(height: 12),
+          Text(
+            'Sign in with a phone code',
+            style: AppType.display.copyWith(fontWeight: FontWeight.w800),
           ),
-        ),
+          const SizedBox(height: 6),
+          Text(
+            'We send a 6 digit code to this number.',
+            style: AppType.body.copyWith(color: AppConstants.mute),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _phone,
+            keyboardType: TextInputType.phone,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
+            decoration: const InputDecoration(
+              labelText: 'Mobile',
+              prefixIcon: Icon(Icons.phone_outlined, size: 22),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _email,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: 'Email for the code',
+              prefixIcon: Icon(Icons.email_outlined, size: 22),
+            ),
+          ),
+          const SizedBox(height: 12),
+          if (!_sent)
+            TextField(
+              controller: _name,
+              decoration: const InputDecoration(
+                labelText: 'Name, if this number is new',
+                prefixIcon: Icon(Icons.person_outline, size: 22),
+              ),
+            ),
+          if (_sent)
+            TextField(
+              controller: _code,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
+              decoration: const InputDecoration(
+                labelText: '6 digit code',
+                prefixIcon: Icon(Icons.password_outlined, size: 22),
+              ),
+            ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: _busy ? null : (_sent ? _verify : _send),
+            icon: Icon(_sent ? Icons.login_outlined : Icons.sms_outlined, size: 20),
+            label: Text(_sent ? 'Sign in' : 'Send code'),
+          ),
+        ],
       ),
     );
-
   }
 }

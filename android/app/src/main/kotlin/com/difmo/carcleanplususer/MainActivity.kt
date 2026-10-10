@@ -1,4 +1,4 @@
-package com.example.car_clean_user
+package com.difmo.carcleanplususer
 
 import io.flutter.embedding.android.FlutterActivity
 

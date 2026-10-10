@@ -1,97 +1,68 @@
-import 'package:car_clean_user/location/user_city_location.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../theme/brand_theme.dart';
+import '../utils/constants.dart';
+
 class LocationPermission extends StatelessWidget {
+  const LocationPermission({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F3FC), // Light background color
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Title and Description
-          Padding(
-            padding: const EdgeInsets.only(top: 50.0),
-            child: Column(
-              children: const [
-                Text(
-                  'Select your city to get',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Professional Auto Care at your Door-Step!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          // Image
-          Image.asset(
-            'assets/city_image.png', // Replace with your asset path
-            height: 300,
-            width: 300,
-          ),
-          // Buttons
-          Column(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+          child: Column(
             children: [
-              // Open Location Settings Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ElevatedButton(
+              const BrandIconWell(icon: Icons.location_city_outlined),
+              const SizedBox(height: 16),
+              Text(
+                'Select your city to get',
+                textAlign: TextAlign.center,
+                style: AppType.display.copyWith(fontWeight: FontWeight.w800),
+              ),
+              Text(
+                'Professional Auto Care at your Door-Step!',
+                textAlign: TextAlign.center,
+                style: AppType.title,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Turn on location so we can confirm the doorstep wash area.',
+                textAlign: TextAlign.center,
+                style: AppType.body.copyWith(color: AppConstants.mute, height: 1.4),
+              ),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
                   onPressed: () async {
-                    // Request location permission
                     if (await Permission.location.request().isGranted) {
-                      // Location permission granted, no SnackBar needed
+                      // Location permission granted.
                     } else {
-                      // If permission is denied, open location settings
                       openAppSettings();
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Open Location Settings',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                  icon: const Icon(Icons.my_location_outlined, size: 20),
+                  label: const Text('Open Location Settings'),
                 ),
               ),
-              const SizedBox(height: 16),
-              // Browse Cities Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: OutlinedButton(
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
                   onPressed: () {
-                    // Navigate to city selection or another action
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectCityPage(),
-                      ),
-                    );
+                    context.push('/cities');
                   },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.black),
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Browse Cities',
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                  ),
+                  icon: const Icon(Icons.location_city_outlined, size: 20),
+                  label: const Text('Browse Cities'),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-        ],
+        ),
       ),
     );
   }
