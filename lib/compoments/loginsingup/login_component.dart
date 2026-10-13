@@ -51,6 +51,9 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
       _step = _AuthStep.signUp;
     }
     _loadRemembered();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AuthProvider>().clearError();
+    });
   }
 
   Future<void> _loadRemembered() async {
@@ -110,6 +113,7 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
   }
 
   void _go(_AuthStep step) {
+    context.read<AuthProvider>().clearError();
     setState(() => _step = step);
   }
 

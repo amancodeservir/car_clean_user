@@ -17,6 +17,14 @@ class AuthProvider with ChangeNotifier {
   String? get error => _error;
   bool get isAuthenticated => _user != null;
 
+  void clearError() {
+    if (_error != null || _otpPending) {
+      _error = null;
+      _otpPending = false;
+      notifyListeners();
+    }
+  }
+
   AuthProvider() {
     _initAuth();
   }
@@ -116,7 +124,12 @@ class AuthProvider with ChangeNotifier {
       await _registerPush(user);
       return true;
     } catch (e) {
-      _error = e.toString().replaceAll('Exception: ', '');
+      final text = e.toString().replaceAll('Exception: ', '');
+      if (text.contains('PlatformException') || text.contains('sign_in_failed') || text.contains('10:')) {
+        _error = 'Google Sign-In is unavailable on this device. Please sign in with email and password.';
+      } else {
+        _error = text;
+      }
       return false;
     } finally {
       _isLoading = false;
