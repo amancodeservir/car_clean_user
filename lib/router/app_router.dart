@@ -24,28 +24,50 @@ import '../utils/constants.dart';
 
 GoRouter createRouter(AuthProvider auth, WalkthroughGate gate) {
   return GoRouter(
-    initialLocation: '/boot',
+    initialLocation: '/home',
     refreshListenable: Listenable.merge([auth, gate]),
     redirect: (context, state) {
       final path = state.matchedLocation;
       if (auth.isLoading) {
         return path == '/boot' ? null : '/boot';
       }
-      if (!gate.seen) {
-        return path == '/walkthrough' ? null : '/walkthrough';
-      }
-      final signedIn = auth.isAuthenticated;
-      if (!signedIn) {
-        if (path == '/login' || path == '/otp') return null;
-        return '/login';
-      }
-      final customer = auth.user?.role == 'customer';
-      if (!customer) {
-        return path == '/desk' ? null : '/desk';
-      }
-      if (path == '/login' || path == '/boot' || path == '/desk' || path == '/walkthrough') {
+      if (path == '/boot') {
         return '/home';
       }
+
+      final signedIn = auth.isAuthenticated;
+
+      // Staff/Desk redirect
+      if (signedIn && auth.user?.role != 'customer') {
+        return path == '/desk' ? null : '/desk';
+      }
+
+      // Show walkthrough ONLY for new registered customer who has NOT seen onboarding
+      final needsOnboarding = signedIn &&
+          auth.user?.role == 'customer' &&
+          auth.user?.seenOnboarding == false &&
+          !gate.seen &&
+          path != '/book';
+
+      if (needsOnboarding) {
+        return path == '/walkthrough' ? null : '/walkthrough';
+      }
+
+      // If user is on login/desk or on walkthrough when already seen, redirect to /home
+      if (signedIn) {
+        if (path == '/login' ||
+            path == '/boot' ||
+            path == '/desk' ||
+            (path == '/walkthrough' && (gate.seen || auth.user?.seenOnboarding == true))) {
+          return '/home';
+        }
+      }
+
+      // Guest trying to access desk
+      if (!signedIn && path == '/desk') {
+        return '/home';
+      }
+
       return null;
     },
     routes: [

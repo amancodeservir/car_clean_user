@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../compoments/loginsingup/login_component.dart';
 
 const _radius = BorderRadius.all(Radius.circular(16));
 
@@ -314,6 +315,46 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
+  Future<bool> _showLoginBottomSheet() async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return Container(
+          height: MediaQuery.of(sheetContext).size.height * 0.88,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 10, bottom: 6),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppConstants.line,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Expanded(
+                child: LoginSignupCard(
+                  initialStep: 'signIn',
+                  showClose: true,
+                  onClose: () => Navigator.of(sheetContext).pop(false),
+                  onSuccess: () => Navigator.of(sheetContext).pop(true),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    return result == true;
+  }
+
   Future<void> _confirm() async {
     if (_submitting) return;
     if (_price == 0) {
@@ -324,6 +365,12 @@ class _BookingPageState extends State<BookingPage> {
     if (invalid != null) {
       _showSnack(invalid);
       return;
+    }
+
+    final auth = context.read<AuthProvider>();
+    if (!auth.isAuthenticated) {
+      final loggedIn = await _showLoginBottomSheet();
+      if (!loggedIn || !mounted) return;
     }
 
     final user = context.read<AuthProvider>().user;
@@ -387,6 +434,10 @@ class _BookingPageState extends State<BookingPage> {
         if (uri != null) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         }
+      } else if (_paymentMethod == 'Online') {
+        _showSnack(
+          'The wash is booked. The payment link was not ready, so you can pay the washer at the car.',
+        );
       }
       if (!mounted) return;
       setState(() => _success = true);

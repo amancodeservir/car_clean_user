@@ -50,6 +50,11 @@ class _Detail extends StatelessWidget {
   Widget build(BuildContext context) {
     final canCancel = order.status == 'pending';
     final canMove = order.status == 'pending' || order.status == 'confirmed';
+    final canPay = order.paymentStatus != 'paid' &&
+        order.status != 'cancelled' &&
+        order.status != 'canceled' &&
+        order.status != 'blocked' &&
+        order.status != 'lead';
     final vehicleIcon = order.category == 'Bike' ? Icons.two_wheeler_outlined : Icons.directions_car_outlined;
     return Scaffold(
       backgroundColor: AppConstants.cream,
@@ -135,6 +140,7 @@ class _Detail extends StatelessWidget {
                         title: _label(event.status),
                         when: _stamp(event.at),
                         who: [event.byName, _role(event.byRole)].where((part) => part.isNotEmpty).join(' · '),
+                        note: event.note,
                         last: event == order.timeline.last,
                       ),
                   const SizedBox(height: 16),
@@ -159,6 +165,8 @@ class _Detail extends StatelessWidget {
                   ),
                   if (order.rating != null)
                     _Row(icon: Icons.star_outline, text: 'Rated ${order.rating} of 5'),
+                  _WashPhoto(label: 'Before', image: order.beforePhoto),
+                  _WashPhoto(label: 'After', image: order.afterPhoto),
                   if (order.reports.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Text('Reports', style: AppType.title),
@@ -175,6 +183,12 @@ class _Detail extends StatelessWidget {
                           onPressed: () => launchUrl(Uri.parse(
                             'tel:${order.washerPhone.isNotEmpty ? order.washerPhone : order.staffPhone}',
                           )),
+                        ),
+                      if (canPay)
+                        _Button(
+                          icon: Icons.payments_outlined,
+                          label: 'Pay now',
+                          onPressed: () => _pay(context),
                         ),
                       if (canCancel)
                         _Button(
@@ -244,6 +258,20 @@ class _Detail extends StatelessWidget {
         SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
       );
     }
+  }
+
+  Future<void> _pay(BuildContext context) async {
+    await _run(context, (token) async {
+      final data = await ApiService.sendJson('POST', '/booking/${order.id}/pay', token, {});
+      if (!context.mounted) return;
+      final nested = data['data'];
+      final direct = '${data['paymentUrl'] ?? ''}'.trim();
+      final nestedUrl = nested is Map ? '${nested['paymentUrl'] ?? ''}'.trim() : '';
+      final uri = Uri.tryParse(direct.isNotEmpty ? direct : nestedUrl);
+      if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    });
   }
 
   Future<void> _reschedule(BuildContext context) async {
@@ -446,12 +474,14 @@ class _PathStep extends StatelessWidget {
     required this.when,
     required this.who,
     required this.last,
+    this.note = '',
   });
 
   final String title;
   final String when;
   final String who;
   final bool last;
+  final String note;
 
   @override
   Widget build(BuildContext context) {
@@ -482,9 +512,44 @@ class _PathStep extends StatelessWidget {
                   Text(title, style: AppType.item),
                   Text(when, style: AppType.label.copyWith(color: AppConstants.mute)),
                   if (who.isNotEmpty) Text(who, style: AppType.label.copyWith(color: AppConstants.ink)),
+                  if (note.isNotEmpty) Text(note, style: AppType.body.copyWith(color: AppConstants.mute)),
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WashPhoto extends StatelessWidget {
+  const _WashPhoto({required this.label, required this.image});
+
+  final String label;
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!image.startsWith('data:image')) return const SizedBox.shrink();
+    final comma = image.indexOf(',');
+    if (comma < 0) return const SizedBox.shrink();
+    Uint8List bytes;
+    try {
+      bytes = base64Decode(image.substring(comma + 1));
+    } catch (_) {
+      return const SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: AppType.item),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.memory(bytes, height: 160, width: double.infinity, fit: BoxFit.cover),
           ),
         ],
       ),

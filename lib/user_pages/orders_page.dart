@@ -57,6 +57,7 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     final orders = context.watch<AppProvider>().orders;
+    final signedIn = context.watch<AuthProvider>().isAuthenticated;
     return Scaffold(
       appBar: AppBar(title: const Text('Orders')),
       body: RefreshIndicator(
@@ -69,10 +70,25 @@ class _OrdersPageState extends State<OrdersPage> {
                   const SizedBox(height: 12),
                   Center(
                     child: Text(
-                      'No washes booked yet.',
+                      signedIn ? 'No washes booked yet.' : 'Sign in to see your booked washes.',
                       style: AppType.body.copyWith(color: AppConstants.mute, fontWeight: FontWeight.w600),
                     ),
                   ),
+                  if (!signedIn) ...[
+                    const SizedBox(height: 16),
+                    Center(
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppConstants.signal,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () => context.push('/login'),
+                        icon: const Icon(Icons.login_rounded, size: 18),
+                        label: const Text('Sign in'),
+                      ),
+                    ),
+                  ],
                 ],
               )
             : ListView.separated(

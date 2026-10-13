@@ -34,11 +34,41 @@ class _HomePageState extends State<HomePage> {
     final app = context.watch<AppProvider>();
     final name = (user?.name ?? '').trim();
     final first = name.isEmpty ? 'there' : name.split(' ').first;
-    final visible = _offers.where((offer) {
+    final offered = _offers.where((offer) => app.offers(offer.service)).toList();
+    final visible = offered.where((offer) {
       if (_chip == 'Foam Wash') return offer.service == 'Basic Wash' || offer.title == 'Foam Wash';
       if (_chip == 'Stream Wash') return offer.service == 'Premium Wash';
       return offer.service == 'Complete Clean' || offer.title == 'Polishing';
     }).toList();
+    final popular = visible.take(3).toList();
+    final doorstep = [
+      ...offered.where((offer) => offer.title != 'Stream Wash'),
+      if (app.offers('Basic Wash'))
+        const _Offer('Bike', 'Basic Wash', Icons.two_wheeler, 'A wash for bikes and mopeds.'),
+    ];
+    final posterCards = <Widget>[
+      if (app.offers('Festive Offer'))
+        _PosterCard(
+          image: AppConstants.photoHero,
+          kicker: 'Festive',
+          title: 'A new-car shine\nat your door',
+          onTap: () => _openDetail(context, title: 'Luxury Care', service: 'Festive Offer', vehicle: app.vehicle),
+        ),
+      if (app.offers('Complete Clean'))
+        _PosterCard(
+          image: AppConstants.photoInterior,
+          kicker: 'Interior',
+          title: 'Seats, mats and\na deep clean',
+          onTap: () => _openDetail(context, title: 'Deep Clean', service: 'Complete Clean', vehicle: app.vehicle),
+        ),
+      if (app.offers('Complete Clean'))
+        _PosterCard(
+          image: AppConstants.photoBeforeAfter,
+          kicker: 'Before and after',
+          title: 'See the wash\nup close',
+          onTap: () => _openDetail(context, title: 'Complete Clean', service: 'Complete Clean', vehicle: app.vehicle),
+        ),
+    ];
 
     return Scaffold(
       backgroundColor: AppConstants.cream,
@@ -68,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                _RoundIcon(icon: Icons.search, onTap: () => _search(context, app.vehicle)),
+                _RoundIcon(icon: Icons.search, onTap: () => _search(context, app)),
                 const SizedBox(width: 8),
                 _RoundIcon(
                   icon: Icons.notifications_none,
@@ -144,70 +174,57 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const SizedBox(height: 18),
-            Text('Popular washes', style: AppType.title),
-            const SizedBox(height: 10),
-            for (final offer in visible.take(3))
-              _StudioRow(
-                offer: offer,
-                price: _price(app, offer),
-                onTap: () => _openDetail(context, title: offer.title, service: offer.service, vehicle: app.vehicle),
+            if (popular.isNotEmpty) ...[
+              const SizedBox(height: 18),
+              Text('Popular washes', style: AppType.title),
+              const SizedBox(height: 10),
+              for (final offer in popular)
+                _StudioRow(
+                  offer: offer,
+                  price: _price(app, offer),
+                  onTap: () => _openDetail(context, title: offer.title, service: offer.service, vehicle: app.vehicle),
+                ),
+            ],
+            if (doorstep.isNotEmpty) ...[
+              SizedBox(height: popular.isNotEmpty ? 8 : 18),
+              Text('Doorstep services', style: AppType.title),
+              const SizedBox(height: 10),
+              GridView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisExtent: 114,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                ),
+                children: [
+                  for (final offer in doorstep)
+                    _CategoryTile(
+                      offer: offer,
+                      onTap: () {
+                        final isBike = offer.title == 'Bike';
+                        if (isBike) context.read<AppProvider>().setVehicle('BIKE');
+                        _openDetail(
+                          context,
+                          title: isBike ? 'Bike Wash' : offer.title,
+                          service: offer.service,
+                          vehicle: isBike ? 'BIKE' : app.vehicle,
+                        );
+                      },
+                    ),
+                ],
               ),
-            const SizedBox(height: 8),
-            Text('Doorstep services', style: AppType.title),
-            const SizedBox(height: 10),
-            GridView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisExtent: 114,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
-              children: [
-                for (final offer in [
-                  ..._offers.where((offer) => offer.title != 'Stream Wash'),
-                  const _Offer('Bike', 'Basic Wash', Icons.two_wheeler, 'A wash for bikes and mopeds.'),
-                ])
-                  _CategoryTile(
-                    offer: offer,
-                    onTap: () {
-                      final isBike = offer.title == 'Bike';
-                      if (isBike) context.read<AppProvider>().setVehicle('BIKE');
-                      _openDetail(
-                        context,
-                        title: isBike ? 'Bike Wash' : offer.title,
-                        service: offer.service,
-                        vehicle: isBike ? 'BIKE' : app.vehicle,
-                      );
-                    },
-                  ),
+            ],
+            if (posterCards.isNotEmpty) ...[
+              SizedBox(height: popular.isNotEmpty || doorstep.isNotEmpty ? 20 : 18),
+              Text('Posters', style: AppType.title),
+              const SizedBox(height: 10),
+              for (var i = 0; i < posterCards.length; i++) ...[
+                if (i > 0) const SizedBox(height: 10),
+                posterCards[i],
               ],
-            ),
-            const SizedBox(height: 20),
-            Text('Posters', style: AppType.title),
-            const SizedBox(height: 10),
-            _PosterCard(
-              image: AppConstants.photoHero,
-              kicker: 'Festive',
-              title: 'A new-car shine\nat your door',
-              onTap: () => _openDetail(context, title: 'Luxury Care', service: 'Festive Offer', vehicle: app.vehicle),
-            ),
-            const SizedBox(height: 10),
-            _PosterCard(
-              image: AppConstants.photoInterior,
-              kicker: 'Interior',
-              title: 'Seats, mats and\na deep clean',
-              onTap: () => _openDetail(context, title: 'Deep Clean', service: 'Complete Clean', vehicle: app.vehicle),
-            ),
-            const SizedBox(height: 10),
-            _PosterCard(
-              image: AppConstants.photoBeforeAfter,
-              kicker: 'Before and after',
-              title: 'See the wash\nup close',
-              onTap: () => _openDetail(context, title: 'Complete Clean', service: 'Complete Clean', vehicle: app.vehicle),
-            ),
+            ],
           ],
         ),
       ),
@@ -232,7 +249,8 @@ class _HomePageState extends State<HomePage> {
     }).toString());
   }
 
-  Future<void> _search(BuildContext context, String vehicle) async {
+  Future<void> _search(BuildContext context, AppProvider app) async {
+    final results = _offers.where((offer) => app.offers(offer.service)).toList();
     final picked = await showModalBottomSheet<_Offer>(
       context: context,
       isScrollControlled: true,
@@ -246,11 +264,12 @@ class _HomePageState extends State<HomePage> {
             shrinkWrap: true,
             padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-                child: Text('Search a wash', style: AppType.title),
-              ),
-              for (final offer in _offers)
+              if (results.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                  child: Text('Search a wash', style: AppType.title),
+                ),
+              for (final offer in results)
                 ListTile(
                   visualDensity: VisualDensity.compact,
                   leading: Icon(offer.icon, color: AppConstants.orange, size: 22),
@@ -264,7 +283,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
     if (picked != null && context.mounted) {
-      _openDetail(context, title: picked.title, service: picked.service, vehicle: vehicle);
+      _openDetail(context, title: picked.title, service: picked.service, vehicle: app.vehicle);
     }
   }
 }

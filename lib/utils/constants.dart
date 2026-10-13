@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppConstants {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE',
-    defaultValue: 'http://localhost:5001/api',
+    defaultValue: 'https://carcleanplus-backend.vercel.app/api',
   );
 
   static const String bookedSlots = '/booking/booked-slots';
@@ -17,8 +17,14 @@ class AppConstants {
   static const String referral = '/account/referral';
   static const String otpRequest = '/auth/otp/request';
   static const String otpVerify = '/auth/otp/verify';
+  static const String googleAuth = '/auth/google';
+  static const String appleAuth = '/auth/apple';
+  static const String updateMe = '/auth/me';
+  static const String deleteAccount = '/auth/delete-account';
+  static const String pushToken = '/account/push-token';
 
   static String booking(String id) => '/booking/$id';
+  static String payBooking(String id) => '/booking/$id/pay';
   static String cancelBooking(String id) => '/booking/$id/cancel';
   static String rescheduleBooking(String id) => '/booking/$id/reschedule';
   static String rateBooking(String id) => '/booking/$id/rate';

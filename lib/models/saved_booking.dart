@@ -18,6 +18,8 @@ class SavedBooking {
   final int? rating;
   final String washerName;
   final String washerPhone;
+  final String beforePhoto;
+  final String afterPhoto;
   final List<OrderEvent> timeline;
   final List<OrderReport> reports;
 
@@ -41,6 +43,8 @@ class SavedBooking {
     this.rating,
     this.washerName = '',
     this.washerPhone = '',
+    this.beforePhoto = '',
+    this.afterPhoto = '',
     this.timeline = const [],
     this.reports = const [],
   });
@@ -64,6 +68,8 @@ class SavedBooking {
       'paymentStatus': paymentStatus,
       'paymentUrl': paymentUrl,
       'rating': rating,
+      'beforePhoto': beforePhoto,
+      'afterPhoto': afterPhoto,
     };
   }
 
@@ -98,6 +104,8 @@ class SavedBooking {
       'rating': json['rating'],
       'washerName': json['washerName'] ?? assignedMap['name'],
       'washerPhone': json['washerPhone'] ?? assignedMap['phone'],
+      'beforePhoto': json['beforePhoto'],
+      'afterPhoto': json['afterPhoto'],
       'timeline': json['timeline'],
       'reports': json['reports'],
     });
@@ -124,6 +132,8 @@ class SavedBooking {
       rating: json['rating'] is num ? (json['rating'] as num).round() : int.tryParse('${json['rating']}'),
       washerName: json['washerName']?.toString() ?? '',
       washerPhone: json['washerPhone']?.toString() ?? '',
+      beforePhoto: json['beforePhoto']?.toString() ?? '',
+      afterPhoto: json['afterPhoto']?.toString() ?? '',
       timeline: _events(json['timeline']),
       reports: _reports(json['reports']),
     );
@@ -138,6 +148,7 @@ class SavedBooking {
         at: row['at']?.toString() ?? '',
         byName: row['byName']?.toString() ?? '',
         byRole: row['byRole']?.toString() ?? '',
+        note: row['note']?.toString() ?? '',
       );
     }).toList();
   }
@@ -169,12 +180,14 @@ class OrderEvent {
     required this.at,
     required this.byName,
     required this.byRole,
+    this.note = '',
   });
 
   final String status;
   final String at;
   final String byName;
   final String byRole;
+  final String note;
 }
 
 class OrderReport {

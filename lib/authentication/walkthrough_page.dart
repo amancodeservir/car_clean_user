@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
+import '../providers/auth_provider.dart';
 import '../theme/brand_theme.dart';
 import '../utils/constants.dart';
 
@@ -10,11 +12,18 @@ class WalkthroughGate extends ChangeNotifier {
   bool seen;
 
   static Future<WalkthroughGate> load() async {
-    return WalkthroughGate(false);
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool('ccp_walkthrough_seen') ?? false;
+    return WalkthroughGate(seen);
   }
 
-  Future<void> complete() async {
+  Future<void> complete({AuthProvider? auth}) async {
     seen = true;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('ccp_walkthrough_seen', true);
+    if (auth != null && auth.isAuthenticated) {
+      await auth.markOnboardingSeen();
+    }
     notifyListeners();
   }
 }
@@ -47,24 +56,53 @@ class _WalkthroughPageState extends State<WalkthroughPage> {
     }
     final app = context.read<AppProvider>();
     final gate = context.read<WalkthroughGate>();
+    final auth = context.read<AuthProvider>();
     await app.setVehicle(_vehicle);
-    await gate.complete();
+    await gate.complete(auth: auth);
+  }
+
+  Future<void> _skip() async {
+    final gate = context.read<WalkthroughGate>();
+    final auth = context.read<AuthProvider>();
+    await gate.complete(auth: auth);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstants.cream,
-      body: PageView(
-        controller: _page,
-        onPageChanged: (value) => setState(() => _index = value),
+      body: Stack(
         children: [
-          _LookSlide(onNext: _next),
-          _StartSlide(onNext: _next),
-          _VehicleSlide(
-            vehicle: _vehicle,
-            onPick: (value) => setState(() => _vehicle = value),
-            onNext: _next,
+          PageView(
+            controller: _page,
+            onPageChanged: (value) => setState(() => _index = value),
+            children: [
+              _LookSlide(onNext: _next),
+              _StartSlide(onNext: _next),
+              _VehicleSlide(
+                vehicle: _vehicle,
+                onPick: (value) => setState(() => _vehicle = value),
+                onNext: _next,
+              ),
+            ],
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8, right: 14),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: _index == 0 ? Colors.white : AppConstants.ink,
+                    backgroundColor: _index == 0 ? const Color(0x33000000) : const Color(0x11000000),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  ),
+                  onPressed: _skip,
+                  child: const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600)),
+                ),
+              ),
+            ),
           ),
         ],
       ),

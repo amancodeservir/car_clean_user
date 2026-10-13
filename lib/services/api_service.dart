@@ -157,6 +157,18 @@ class ApiService {
     }
   }
 
+  static Future<String> payBooking(String token, String id) async {
+    final response = await sendJson('POST', '/booking/$id/pay', token, {});
+    final direct = response['paymentUrl']?.toString() ?? '';
+    if (direct.startsWith('http')) return direct;
+    final data = response['data'];
+    if (data is Map && data['paymentUrl'] != null) {
+      final url = data['paymentUrl'].toString();
+      if (url.startsWith('http')) return url;
+    }
+    throw Exception('Payment link was not ready');
+  }
+
   static Future<Map<String, dynamic>> getJson(String path, String token) async {
     final response = await _send(
       () => http.get(

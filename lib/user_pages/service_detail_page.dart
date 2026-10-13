@@ -24,6 +24,7 @@ class ServiceDetailPage extends StatelessWidget {
     final category = vehicle == 'BIKE' ? 'Bike' : 'Compact';
     final price = app.priceFor(category: category, service: service);
     final ride = vehicle == 'BIKE' ? 'bike' : 'car';
+    final washOff = app.catalogLoaded && !app.offers(service);
 
     return Scaffold(
       backgroundColor: AppConstants.paper,
@@ -101,7 +102,11 @@ class ServiceDetailPage extends StatelessWidget {
               ],
             ),
           ),
-          _BookBar(price: price, onBook: () => _sheet(context, price)),
+          _BookBar(
+            price: price,
+            turnedOff: washOff,
+            onBook: () => _sheet(context, price),
+          ),
         ],
       ),
     );
@@ -308,13 +313,31 @@ class _MiniService extends StatelessWidget {
 }
 
 class _BookBar extends StatelessWidget {
-  const _BookBar({required this.price, required this.onBook});
+  const _BookBar({
+    required this.price,
+    required this.onBook,
+    this.turnedOff = false,
+  });
 
   final int price;
   final VoidCallback onBook;
+  final bool turnedOff;
 
   @override
   Widget build(BuildContext context) {
+    final priceLabel = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Price', style: AppType.label.copyWith(color: AppConstants.mute)),
+        const SizedBox(height: 2),
+        Text(
+          price == 0 ? 'Ask' : '₹$price',
+          style: AppType.display.copyWith(fontSize: 24),
+        ),
+      ],
+    );
+
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -329,28 +352,28 @@ class _BookBar extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 12, 16, 12),
           child: Row(
             children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Price', style: AppType.label.copyWith(color: AppConstants.mute)),
-                    const SizedBox(height: 2),
-                    Text(
-                      price == 0 ? 'Ask' : '₹$price',
-                      style: AppType.display.copyWith(fontSize: 24),
+              if (turnedOff) priceLabel else Expanded(child: priceLabel),
+              if (turnedOff) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'This wash is turned off. Ask the desk to turn it on.',
+                    textAlign: TextAlign.end,
+                    style: AppType.body.copyWith(
+                      color: AppConstants.mute,
+                      fontWeight: FontWeight.w500,
                     ),
-                  ],
+                  ),
                 ),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(148, 52),
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
+              ] else
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(148, 52),
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                  ),
+                  onPressed: onBook,
+                  child: const Text('Book Now'),
                 ),
-                onPressed: onBook,
-                child: const Text('Book Now'),
-              ),
             ],
           ),
         ),

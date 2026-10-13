@@ -38,6 +38,19 @@ class ProfilePage extends StatelessWidget {
               final selected = await context.push<String>('/cities');
               if (selected != null && selected.isNotEmpty) {
                 appProvider.setCity(selected);
+                if (user != null) {
+                  final error = await authProvider.updateProfile(
+                    name: user.name,
+                    phone: user.phone,
+                    city: selected,
+                    address: appProvider.address,
+                  );
+                  if (error != null && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(error)),
+                    );
+                  }
+                }
               }
             },
           ),
@@ -73,20 +86,78 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 const _Garage(),
-                TextButton.icon(
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                if (user != null) ...[
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      context.read<AuthProvider>().logout();
+                    },
+                    icon: const Icon(Icons.logout_rounded, size: 18, color: Color(0xFFB91C1C)),
+                    label: Text(
+                      'Log out',
+                      style: AppType.title.copyWith(color: const Color(0xFFB91C1C)),
+                    ),
                   ),
-                  onPressed: () {
-                    context.read<AuthProvider>().logout();
-                  },
-                  icon: const Icon(Icons.logout_rounded, size: 18, color: Color(0xFFB91C1C)),
-                  label: Text(
-                    'Log out',
-                    style: AppType.title.copyWith(color: const Color(0xFFB91C1C)),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (dialogContext) {
+                          return AlertDialog(
+                            content: const Text(
+                              'Delete this account? Washes and the login are removed.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext, true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      if (confirmed != true || !context.mounted) return;
+                      final auth = context.read<AuthProvider>();
+                      final message = await auth.deleteAccount();
+                      if (message != null && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message)),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Delete account',
+                      style: AppType.title.copyWith(color: const Color(0xFFB91C1C)),
+                    ),
                   ),
-                ),
+                ] else ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppConstants.signal,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      ),
+                      onPressed: () => context.push('/login'),
+                      icon: const Icon(Icons.login_rounded, size: 20),
+                      label: const Text('Sign in / Register', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -131,7 +202,22 @@ class ProfilePage extends StatelessWidget {
       },
     );
     if (saved == true) {
-      appProvider.setAddress(controller.text.trim());
+      final nextAddress = controller.text.trim();
+      appProvider.setAddress(nextAddress);
+      final user = context.mounted ? context.read<AuthProvider>().user : null;
+      if (user != null) {
+        final error = await context.read<AuthProvider>().updateProfile(
+          name: user.name,
+          phone: user.phone,
+          city: appProvider.city,
+          address: nextAddress,
+        );
+        if (error != null && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error)),
+          );
+        }
+      }
     }
     controller.dispose();
   }

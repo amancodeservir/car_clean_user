@@ -9,7 +9,18 @@ import '../../utils/constants.dart';
 enum _AuthStep { welcome, signIn, signUp, forgot }
 
 class LoginSignupCard extends StatefulWidget {
-  const LoginSignupCard({super.key});
+  const LoginSignupCard({
+    super.key,
+    this.onSuccess,
+    this.initialStep,
+    this.showClose = false,
+    this.onClose,
+  });
+
+  final VoidCallback? onSuccess;
+  final String? initialStep;
+  final bool showClose;
+  final VoidCallback? onClose;
 
   @override
   State<LoginSignupCard> createState() => _LoginSignupCardState();
@@ -34,6 +45,11 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialStep == 'signIn') {
+      _step = _AuthStep.signIn;
+    } else if (widget.initialStep == 'signUp') {
+      _step = _AuthStep.signUp;
+    }
     _loadRemembered();
   }
 
@@ -77,10 +93,14 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
         } else {
           await prefs.remove('ccp_remember_email');
         }
+        widget.onSuccess?.call();
       }
     } else {
       final name = '${_first.text.trim()} ${_last.text.trim()}'.trim();
       ok = await auth.register(name, _email.text.trim(), _phone.text.trim(), _password.text);
+      if (ok) {
+        widget.onSuccess?.call();
+      }
     }
     if (!ok && !auth.otpPending && auth.error != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -93,10 +113,32 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
     setState(() => _step = step);
   }
 
-  void _comingSoon(String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$provider sign-in is coming soon. Continue with email.')),
-    );
+  Future<void> _signInWithGoogle() async {
+    final auth = context.read<AuthProvider>();
+    final ok = await auth.signInWithGoogle();
+    if (ok) {
+      widget.onSuccess?.call();
+      return;
+    }
+    if (!ok && !auth.otpPending && auth.error != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.error!)),
+      );
+    }
+  }
+
+  Future<void> _signInWithApple() async {
+    final auth = context.read<AuthProvider>();
+    final ok = await auth.signInWithApple();
+    if (ok) {
+      widget.onSuccess?.call();
+      return;
+    }
+    if (!ok && !auth.otpPending && auth.error != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.error!)),
+      );
+    }
   }
 
   @override
@@ -114,10 +156,16 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
       child: SafeArea(
         child: switch (_step) {
           _AuthStep.welcome => _Welcome(
+              showClose: widget.showClose,
+              onClose: widget.onClose,
               onEmail: () => _go(_AuthStep.signIn),
               onSignIn: () => _go(_AuthStep.signIn),
-              onGoogle: () => _comingSoon('Google'),
-              onApple: () => _comingSoon('Apple'),
+              onGoogle: () {
+                _signInWithGoogle();
+              },
+              onApple: () {
+                _signInWithApple();
+              },
             ),
           _AuthStep.forgot => _Forgot(
               email: _forgotEmail,
@@ -128,12 +176,19 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(22, 6, 22, 28),
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      onPressed: () => _go(_AuthStep.welcome),
-                      icon: const Icon(Icons.chevron_left, color: AppConstants.ink, size: 28),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () => _go(_AuthStep.welcome),
+                        icon: const Icon(Icons.chevron_left, color: AppConstants.ink, size: 28),
+                      ),
+                      if (widget.showClose)
+                        IconButton(
+                          onPressed: widget.onClose,
+                          icon: const Icon(Icons.close, color: AppConstants.ink, size: 24),
+                        ),
+                    ],
                   ),
                   const _LogoMark(),
                   const SizedBox(height: 18),
@@ -265,7 +320,9 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
                           child: _SocialButton(
                             label: 'Google',
                             icon: const _GoogleMark(),
-                            onPressed: () => _comingSoon('Google'),
+                            onPressed: () {
+                              _signInWithGoogle();
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -273,7 +330,9 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
                           child: _SocialButton(
                             label: 'Apple',
                             icon: const Icon(Icons.apple, size: 20, color: AppConstants.ink),
-                            onPressed: () => _comingSoon('Apple'),
+                            onPressed: () {
+                              _signInWithApple();
+                            },
                           ),
                         ),
                       ],
@@ -316,7 +375,7 @@ class _LoginSignupCardState extends State<LoginSignupCard> {
          Text.rich(
           TextSpan(
             style: AppType.label,
-            children: [
+            children: const [
               TextSpan(text: 'Phone number'),
             ],
           ),
@@ -428,12 +487,16 @@ class _Welcome extends StatelessWidget {
     required this.onSignIn,
     required this.onGoogle,
     required this.onApple,
+    this.showClose = false,
+    this.onClose,
   });
 
   final VoidCallback onEmail;
   final VoidCallback onSignIn;
   final VoidCallback onGoogle;
   final VoidCallback onApple;
+  final bool showClose;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -441,6 +504,14 @@ class _Welcome extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(22, 12, 22, 16),
       child: Column(
         children: [
+          if (showClose)
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: onClose,
+                icon: const Icon(Icons.close, color: AppConstants.ink, size: 24),
+              ),
+            ),
           const Spacer(),
           const _LogoMark(),
           const SizedBox(height: 28),

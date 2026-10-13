@@ -6,6 +6,7 @@ class User {
   final String role;
   final String? avatar;
   final String token;
+  final bool seenOnboarding;
 
   User({
     required this.id,
@@ -15,6 +16,7 @@ class User {
     required this.role,
     this.avatar,
     required this.token,
+    this.seenOnboarding = false,
   });
 
   factory User.fromJson(Map<String, dynamic> json, String token) {
@@ -26,6 +28,7 @@ class User {
       role: json['role'] ?? 'customer',
       avatar: json['avatar'],
       token: token,
+      seenOnboarding: json['seenOnboarding'] == true,
     );
   }
 
@@ -37,6 +40,29 @@ class User {
       'phone': phone,
       'role': role,
       'avatar': avatar,
+      'seenOnboarding': seenOnboarding,
     };
+  }
+
+  User copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? role,
+    String? avatar,
+    String? token,
+    bool? seenOnboarding,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      role: role ?? this.role,
+      avatar: avatar ?? this.avatar,
+      token: token ?? this.token,
+      seenOnboarding: seenOnboarding ?? this.seenOnboarding,
+    );
   }
 }

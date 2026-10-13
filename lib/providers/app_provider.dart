@@ -21,6 +21,8 @@ class AppProvider extends ChangeNotifier {
   final Map<String, int> _addonPrices = {};
   List<String> _addons = [];
   int _unread = 0;
+  bool catalogLoaded = false;
+  final Set<String> _offeredServices = {};
 
   String get city => _city;
   String get vehicle => _vehicle;
@@ -30,6 +32,8 @@ class AppProvider extends ChangeNotifier {
   List<String> get addons => List.unmodifiable(_addons);
   int addonPrice(String name) => _addonPrices[name] ?? 0;
   int get unread => _unread;
+
+  bool offers(String service) => !catalogLoaded || _offeredServices.contains(service);
 
   int priceFor({required String category, required String service}) {
     return _prices['$category|$service'] ??
@@ -57,6 +61,12 @@ class AppProvider extends ChangeNotifier {
   Future<void> setAddress(String address) async {
     await OrderStore.saveAddress(address);
     _address = address;
+    notifyListeners();
+  }
+
+  void applyAccount({String? city, String? address}) {
+    if (city != null && city.isNotEmpty) _city = city;
+    if (address != null && address.isNotEmpty) _address = address;
     notifyListeners();
   }
 
@@ -123,16 +133,20 @@ class AppProvider extends ChangeNotifier {
       final rows = data['prices'];
       if (rows is List) {
         _prices.clear();
+        _offeredServices.clear();
         for (final row in rows) {
           if (row is! Map) continue;
+          if (row['active'] == false) continue;
           final category = row['category']?.toString() ?? '';
           final service = row['service']?.toString() ?? '';
           final amount = row['amount'];
           final price = amount is num ? amount.round() : int.tryParse('$amount') ?? 0;
+          if (service.isNotEmpty) _offeredServices.add(service);
           if (category.isNotEmpty && service.isNotEmpty) {
             _prices['$category|$service'] = price;
           }
         }
+        catalogLoaded = true;
       }
       final addons = data['addons'];
       if (addons is List) {
@@ -140,6 +154,7 @@ class AppProvider extends ChangeNotifier {
         _addonPrices.clear();
         for (final addon in addons) {
           if (addon is! Map || addon['name'] == null) continue;
+          if (addon['active'] == false) continue;
           final name = addon['name'].toString();
           final amount = addon['amount'];
           _addons.add(name);

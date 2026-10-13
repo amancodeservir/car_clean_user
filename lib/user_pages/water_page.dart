@@ -12,6 +12,19 @@ class WaterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     const service = 'Waterless Wash';
     final app = context.watch<AppProvider>();
+    if (!app.offers(service)) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Waterless wash'),
+        ),
+        body: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text('Waterless wash is not available right now.'),
+          ),
+        ),
+      );
+    }
     final compact = app.priceFor(category: 'Compact', service: service);
     final standard = app.priceFor(category: 'Standard', service: service);
     final large = app.priceFor(category: 'Large', service: service);
