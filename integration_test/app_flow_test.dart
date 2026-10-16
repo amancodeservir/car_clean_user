@@ -27,6 +27,15 @@ void main() {
     throw TestFailure('Timed out waiting for $finder');
   }
 
+  /// Waits for [finder], scrolling the page down if it is not built yet.
+  Future<void> seek(WidgetTester tester, Finder finder) async {
+    try {
+      await waitFor(tester, finder, seconds: 5);
+    } on TestFailure {
+      await tester.scrollUntilVisible(finder, 250, scrollable: find.byType(Scrollable).hitTestable().first);
+    }
+  }
+
   Future<void> settle(WidgetTester tester, [int ms = 900]) async {
     for (var i = 0; i < ms ~/ 100; i++) {
       await tester.pump(const Duration(milliseconds: 100));
@@ -145,12 +154,13 @@ void main() {
     await waitFor(tester, find.text('My Bookings'));
     await shot(tester, 'bookings');
     await tapText(tester, 'Completed');
-    await tapText(tester, 'Premium Wash');
-    await waitFor(tester, find.text('How was your wash?'));
+    await tapText(tester, 'Rate this wash');
+    await seek(tester, find.text('How was your wash?'));
+    await shot(tester, 'rate');
     await tester.tap(find.byIcon(Icons.star_outline_rounded).last);
     await settle(tester);
     await tapText(tester, 'Submit rating');
-    await waitFor(tester, find.text('Your rating'));
+    await seek(tester, find.text('Your rating'));
     await tester.pageBack();
     await settle(tester);
 

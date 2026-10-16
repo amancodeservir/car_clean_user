@@ -159,6 +159,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
   Future<void> _cancel(Booking booking) async {
     final reason = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
       builder: (_) => const _CancelSheet(),
     );
     if (reason == null || !mounted) return;
@@ -458,7 +459,9 @@ class _PaymentCard extends StatelessWidget {
           if (booking.creditUsed > 0) _amount('Referral credit', '-${rupees(booking.creditUsed)}', green: true),
           _amount('Total', rupees(booking.price), strong: true),
           Text(
-            booking.paymentMethod == 'Online' ? 'Online payment' : 'Pay the washer by cash or UPI',
+            paid
+                ? (booking.paymentMethod == 'Online' ? 'Paid online' : 'Paid to the washer')
+                : (booking.paymentMethod == 'Online' ? 'Online payment pending' : 'Pay the washer by cash or UPI'),
             style: AppText.small,
           ),
           const SizedBox(height: 12),
@@ -749,7 +752,7 @@ class _CancelSheetState extends State<_CancelSheet> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -802,7 +805,7 @@ class _RescheduleSheetState extends State<_RescheduleSheet> {
   Widget build(BuildContext context) {
     final unchanged = _date == widget.booking.date && _slot?.id == widget.booking.timeSlot;
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,

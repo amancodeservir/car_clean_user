@@ -53,11 +53,11 @@ class BookingsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.line),
               ),
-              child: TabBar(
+              child: const TabBar(
                 tabs: [
-                  const Tab(height: 36, text: 'Upcoming'),
-                  const Tab(height: 36, text: 'Completed'),
-                  const Tab(height: 36, text: 'Cancelled'),
+                  Tab(height: 36, text: 'Upcoming'),
+                  Tab(height: 36, text: 'Completed'),
+                  Tab(height: 36, text: 'Cancelled'),
                 ],
               ),
             ),
