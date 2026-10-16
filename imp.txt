@@ -1,0 +1,6 @@
+Staff
+washer@carclean.in
+WasherTest1
+Admin
+admin@carclean.in
+\\

@@ -9,6 +9,24 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+# The pre-rebuild screens. Nothing imports them any more (main.dart only uses
+# lib/src), so they are no longer built. See docs/APP_REBUILD_NOTES.md.
+analyzer:
+  exclude:
+    - lib/authentication/**
+    - lib/compoments/**
+    - lib/component/**
+    - lib/data/**
+    - lib/location/**
+    - lib/models/**
+    - lib/providers/**
+    - lib/router/**
+    - lib/services/**
+    - lib/theme/**
+    - lib/user_footer/**
+    - lib/user_pages/**
+    - lib/utils/**
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`

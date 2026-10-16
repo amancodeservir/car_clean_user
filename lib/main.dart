@@ -1,90 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'authentication/splash_page.dart';
-import 'authentication/walkthrough_page.dart';
-import 'providers/app_provider.dart';
-import 'providers/auth_provider.dart';
-import 'router/app_router.dart';
-import 'theme/brand_theme.dart';
+import 'src/config.dart';
+import 'src/providers/account_provider.dart';
+import 'src/providers/auth_provider.dart';
+import 'src/providers/bookings_provider.dart';
+import 'src/providers/catalog_provider.dart';
+import 'src/router.dart';
+import 'src/services/local_store.dart';
+import 'src/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final gate = await WalkthroughGate.load();
-  runApp(MyApp(gate: gate));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark),
+  );
+  final store = await LocalStore.open();
+  runApp(CarCleanApp(store: store));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key, required this.gate});
+class CarCleanApp extends StatefulWidget {
+  const CarCleanApp({super.key, required this.store});
 
-  final WalkthroughGate gate;
+  final LocalStore store;
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<CarCleanApp> createState() => _CarCleanAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  late final AuthProvider _auth;
-  late final AppProvider _app;
-  late final GoRouter _router;
-  bool _showSplash = true;
-  bool _splashExitScheduled = false;
-  late final DateTime _splashStarted;
+class _CarCleanAppState extends State<CarCleanApp> {
+  late final AuthProvider _auth = AuthProvider(widget.store);
+  late final CatalogProvider _catalog = CatalogProvider(widget.store);
+  late final TourGate _tour = TourGate(widget.store);
+  late final AccountProvider _account = AccountProvider(widget.store, _auth, _catalog);
+  late final BookingsProvider _bookings = BookingsProvider(widget.store, _auth);
+  late final GoRouter _router = buildRouter(_auth, _tour);
 
   @override
   void initState() {
     super.initState();
-    _splashStarted = DateTime.now();
-    _auth = AuthProvider();
-    _app = AppProvider();
-    _router = createRouter(_auth, widget.gate);
-    _auth.addListener(_maybeLeaveSplash);
-    _app.addListener(_maybeLeaveSplash);
-    _maybeLeaveSplash();
-  }
-
-  void _maybeLeaveSplash() {
-    if (!_showSplash || _splashExitScheduled || _auth.isLoading || !_app.isReady) return;
-    _splashExitScheduled = true;
-    final elapsed = DateTime.now().difference(_splashStarted);
-    const minimum = Duration(milliseconds: 1700);
-    final remaining = minimum - elapsed;
-    Future.delayed(remaining.isNegative ? Duration.zero : remaining, () {
-      if (mounted) setState(() => _showSplash = false);
-    });
+    _catalog.load();
+    _auth.start();
   }
 
   @override
   void dispose() {
-    _auth.removeListener(_maybeLeaveSplash);
-    _app.removeListener(_maybeLeaveSplash);
     _router.dispose();
+    _bookings.dispose();
+    _account.dispose();
+    _catalog.dispose();
     _auth.dispose();
-    _app.dispose();
+    _tour.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_showSplash) {
-      return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: SplashPage(),
-      );
-    }
-
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>.value(value: _auth),
-        ChangeNotifierProvider<AppProvider>.value(value: _app),
-        ChangeNotifierProvider<WalkthroughGate>.value(value: widget.gate),
+        ChangeNotifierProvider.value(value: _auth),
+        ChangeNotifierProvider.value(value: _catalog),
+        ChangeNotifierProvider.value(value: _tour),
+        ChangeNotifierProvider.value(value: _account),
+        ChangeNotifierProvider.value(value: _bookings),
       ],
       child: MaterialApp.router(
-        title: 'Car Clean Plus',
+        title: AppConfig.appName,
         debugShowCheckedModeBanner: false,
-        theme: BrandTheme.data,
+        theme: AppTheme.light,
         routerConfig: _router,
+        builder: (context, child) {
+          // Keep layouts readable when the phone uses very large text.
+          final media = MediaQuery.of(context);
+          return MediaQuery(
+            data: media.copyWith(textScaler: media.textScaler.clamp(maxScaleFactor: 1.3)),
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
       ),
     );
   }
