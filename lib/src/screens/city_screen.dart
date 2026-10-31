@@ -91,7 +91,7 @@ class _CityScreenState extends State<CityScreen> {
               for (final city in cities)
                 AppCard(
                   padding: const EdgeInsets.all(8),
-                  color: city.name == catalog.city ? AppColors.yellowWash : null,
+                  color: city.name == catalog.city ? AppColors.brandWash : null,
                   onTap: () => _pick(city.name),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class _CityScreenState extends State<CityScreen> {
                       SizedBox(
                         height: 52,
                         child: Photos.cityImages[city.name] == null
-                            ? const Icon(Icons.location_city_rounded, size: 40, color: AppColors.yellowDeep)
+                            ? const Icon(Icons.location_city_rounded, size: 40, color: AppColors.brandDeep)
                             : Image.asset(Photos.cityImages[city.name]!, fit: BoxFit.contain),
                       ),
                       const SizedBox(height: 8),

@@ -59,7 +59,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                   final alert = alerts[index];
                   final linked = alert.bookingId.isNotEmpty && alert.bookingId != 'null';
                   return AppCard(
-                    color: alert.read ? null : AppColors.yellowWash,
+                    color: alert.read ? null : AppColors.brandWash,
                     onTap: linked ? () => context.push('/booking/${alert.bookingId}') : null,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +67,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                         Container(
                           width: 38,
                           height: 38,
-                          decoration: BoxDecoration(color: AppColors.yellowSoft, borderRadius: BorderRadius.circular(10)),
+                          decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(10)),
                           child: const Icon(Icons.local_car_wash_rounded, size: 20),
                         ),
                         const SizedBox(width: 12),

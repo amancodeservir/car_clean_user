@@ -91,7 +91,7 @@ class _PickAddressSheet extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: AppCard(
-                          color: address.isDefault ? AppColors.yellowWash : null,
+                          color: address.isDefault ? AppColors.brandWash : null,
                           onTap: () async {
                             try {
                               await account.setDefaultAddress(address);

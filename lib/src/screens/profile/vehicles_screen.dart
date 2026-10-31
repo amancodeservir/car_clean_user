@@ -40,7 +40,7 @@ class VehiclesScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: AppCard(
-                      color: vehicle == current ? AppColors.yellowWash : null,
+                      color: vehicle == current ? AppColors.brandWash : null,
                       onTap: () => account.selectVehicle(vehicle),
                       child: Row(
                         children: [

@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
     final popular = catalog.services.where((service) => service.popular).toList();
     final next = bookings.upcoming.isEmpty ? null : bookings.upcoming.first;
     return Scaffold(
-      appBar: statusBarBackdrop(const Color(0xFFFFE680)),
+      appBar: statusBarBackdrop(AppColors.headerTop),
       body: RefreshIndicator(
         color: AppColors.ink,
         onRefresh: () => _refresh(context),
@@ -157,7 +157,7 @@ class _Header extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFF1E3A3)),
+                border: Border.all(color: AppColors.brandSoft),
               ),
               child: Row(
                 children: [
@@ -301,10 +301,10 @@ class _HeroBanner extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(color: AppColors.yellow, borderRadius: BorderRadius.circular(6)),
+                    decoration: BoxDecoration(color: AppColors.brand, borderRadius: BorderRadius.circular(6)),
                     child: Text(
                       festival.isEmpty ? 'DOORSTEP CAR WASH' : '${festival.toUpperCase()} OFFER',
-                      style: AppText.tiny.copyWith(color: AppColors.ink, fontWeight: FontWeight.w800),
+                      style: AppText.tiny.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -316,7 +316,7 @@ class _HeroBanner extends StatelessWidget {
                         text: 'Starting at ',
                         style: AppText.small.copyWith(color: Colors.white70),
                         children: [
-                          TextSpan(text: rupees(price), style: AppText.h3.copyWith(color: AppColors.yellow)),
+                          TextSpan(text: rupees(price), style: AppText.h3.copyWith(color: AppColors.brandOnDark)),
                         ],
                       ),
                     ),
@@ -434,15 +434,16 @@ class _UpcomingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      color: AppColors.yellowWash,
+      color: AppColors.brandWash,
       onTap: () => context.push('/booking/${booking.id}'),
       child: Row(
         children: [
           Container(
             width: 46,
             height: 46,
-            decoration: BoxDecoration(color: AppColors.yellow, borderRadius: BorderRadius.circular(12)),
-            child: Icon(booking.isActive ? Icons.directions_run_rounded : Icons.event_available_rounded),
+            decoration: BoxDecoration(color: AppColors.brand, borderRadius: BorderRadius.circular(12)),
+            child: Icon(booking.isActive ? Icons.directions_run_rounded : Icons.event_available_rounded,
+                color: Colors.white),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -496,9 +497,9 @@ class _PlanBanner extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.workspace_premium_rounded, color: AppColors.yellow, size: 20),
+                      const Icon(Icons.workspace_premium_rounded, color: AppColors.brandOnDark, size: 20),
                       const SizedBox(width: 6),
-                      Text('CAR CLEAN PLUS', style: AppText.tiny.copyWith(color: AppColors.yellow, letterSpacing: 1)),
+                      Text('CAR CLEAN PLUS', style: AppText.tiny.copyWith(color: AppColors.brandOnDark, letterSpacing: 1)),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -518,8 +519,8 @@ class _PlanBanner extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(color: AppColors.yellow, borderRadius: BorderRadius.circular(10)),
-              child: Text(active ? 'View' : 'Get plan', style: AppText.smallStrong),
+              decoration: BoxDecoration(color: AppColors.brand, borderRadius: BorderRadius.circular(10)),
+              child: Text(active ? 'View' : 'Get plan', style: AppText.smallStrong.copyWith(color: Colors.white)),
             ),
           ],
         ),
@@ -563,7 +564,7 @@ class _Promises extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(item.$1, size: 22, color: AppColors.yellowDeep),
+                    Icon(item.$1, size: 22, color: AppColors.brandDeep),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(

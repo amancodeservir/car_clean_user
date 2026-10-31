@@ -237,7 +237,7 @@ class _StatusCard extends StatelessWidget {
     final current = _steps.indexWhere((step) => step.$1 == booking.status);
     final at = {for (final event in booking.timeline) event.status: event.at};
     return AppCard(
-      color: AppColors.yellowWash,
+      color: AppColors.brandWash,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -294,15 +294,15 @@ class _StepRow extends StatelessWidget {
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: done ? AppColors.ink : Colors.white,
+                    color: done ? AppColors.brand : Colors.white,
                     shape: BoxShape.circle,
-                    border: Border.all(color: done ? AppColors.ink : AppColors.line, width: 1.5),
+                    border: Border.all(color: done ? AppColors.brand : AppColors.line, width: 1.5),
                   ),
-                  child: Icon(icon, size: 15, color: done ? AppColors.yellow : AppColors.faint),
+                  child: Icon(icon, size: 15, color: done ? Colors.white : AppColors.faint),
                 ),
                 if (!last)
                   Expanded(
-                    child: Container(width: 2, color: done ? AppColors.ink : AppColors.line),
+                    child: Container(width: 2, color: done ? AppColors.brand : AppColors.line),
                   ),
               ],
             ),
@@ -342,7 +342,7 @@ class _WasherCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: AppColors.yellowSoft,
+            backgroundColor: AppColors.brandSoft,
             child: Text(booking.washerName[0].toUpperCase(), style: AppText.h3),
           ),
           const SizedBox(width: 12),
@@ -715,7 +715,7 @@ class _Activity extends StatelessWidget {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.circle, size: 10, color: AppColors.yellowDeep),
+              leading: const Icon(Icons.circle, size: 10, color: AppColors.brandDeep),
               minLeadingWidth: 14,
               title: Text(
                 Booking.labelFor(event.status),

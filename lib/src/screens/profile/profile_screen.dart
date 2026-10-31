@@ -21,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
     final completed = context.watch<BookingsProvider>().completed.length;
 
     return Scaffold(
-      appBar: statusBarBackdrop(const Color(0xFFFFE680)),
+      appBar: statusBarBackdrop(AppColors.headerTop),
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -54,8 +54,8 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundColor: AppColors.ink,
-                        child: Text(user.initial, style: AppText.h1.copyWith(color: AppColors.yellow)),
+                        backgroundColor: AppColors.brand,
+                        child: Text(user.initial, style: AppText.h1.copyWith(color: Colors.white)),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

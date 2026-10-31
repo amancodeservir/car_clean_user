@@ -84,7 +84,7 @@ class _ReferScreenState extends State<ReferScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.yellowDeep, style: BorderStyle.solid),
+                        border: Border.all(color: AppColors.brandDeep, style: BorderStyle.solid),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

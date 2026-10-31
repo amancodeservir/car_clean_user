@@ -103,7 +103,7 @@ class _NavBar extends StatelessWidget {
                             curve: Curves.easeOut,
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             decoration: BoxDecoration(
-                              color: i == index ? AppColors.yellow : Colors.transparent,
+                              color: i == index ? AppColors.brand : Colors.transparent,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Badge(
@@ -113,7 +113,7 @@ class _NavBar extends StatelessWidget {
                               child: Icon(
                                 i == index ? _items[i].$2 : _items[i].$1,
                                 size: 23,
-                                color: i == index ? AppColors.ink : AppColors.mute,
+                                color: i == index ? Colors.white : AppColors.mute,
                               ),
                             ),
                           ),
@@ -122,7 +122,7 @@ class _NavBar extends StatelessWidget {
                             _items[i].$3,
                             style: (i == index ? AppText.smallStrong : AppText.small).copyWith(
                               fontSize: 11.5,
-                              color: i == index ? AppColors.ink : AppColors.mute,
+                              color: i == index ? AppColors.brand : AppColors.mute,
                             ),
                           ),
                         ],

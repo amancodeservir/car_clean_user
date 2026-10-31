@@ -32,7 +32,7 @@ class AddressesScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: AppCard(
-                      color: address.isDefault ? AppColors.yellowWash : null,
+                      color: address.isDefault ? AppColors.brandWash : null,
                       onTap: address.isDefault
                           ? null
                           : () async {

@@ -55,7 +55,7 @@ class _PickVehicleSheet extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: AppCard(
-                        color: vehicle == current ? AppColors.yellowWash : null,
+                        color: vehicle == current ? AppColors.brandWash : null,
                         onTap: () async {
                           await account.selectVehicle(vehicle);
                           if (context.mounted) Navigator.pop(context, vehicle);
@@ -113,7 +113,7 @@ class _VehicleBadge extends StatelessWidget {
     return Container(
       width: 44,
       height: 44,
-      decoration: BoxDecoration(color: AppColors.yellowSoft, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(12)),
       child: Icon(vehicleIcon(vehicle), color: AppColors.ink),
     );
   }
@@ -186,8 +186,8 @@ class _AddVehicleSheetState extends State<_AddVehicleSheet> {
                     SegmentedButton<bool>(
                       showSelectedIcon: false,
                       style: SegmentedButton.styleFrom(
-                        selectedBackgroundColor: AppColors.yellow,
-                        selectedForegroundColor: AppColors.ink,
+                        selectedBackgroundColor: AppColors.brand,
+                        selectedForegroundColor: Colors.white,
                       ),
                       segments: const [
                         ButtonSegment(value: false, icon: Icon(Icons.directions_car_filled_rounded), label: Text('Car')),

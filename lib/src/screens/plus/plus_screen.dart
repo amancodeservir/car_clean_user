@@ -84,9 +84,9 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.workspace_premium_rounded, color: AppColors.yellow, size: 28),
+                      const Icon(Icons.workspace_premium_rounded, color: AppColors.brandOnDark, size: 28),
                       const SizedBox(width: 8),
-                      Text('Car Clean Plus', style: AppText.h2.copyWith(color: AppColors.yellow)),
+                      Text('Car Clean Plus', style: AppText.h2.copyWith(color: AppColors.brandOnDark)),
                     ],
                   ),
                   const SizedBox(height: 14),
@@ -122,7 +122,7 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                           ),
                           Column(
                             children: [
-                              Text('${plan.washesLeft}', style: AppText.h1.copyWith(color: AppColors.yellow)),
+                              Text('${plan.washesLeft}', style: AppText.h1.copyWith(color: AppColors.brandOnDark)),
                               Text('washes left', style: AppText.tiny.copyWith(color: Colors.white70)),
                             ],
                           ),
@@ -140,7 +140,7 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                 children: [
                   if (plan.pendingPlan.isNotEmpty) ...[
                     AppCard(
-                      color: AppColors.yellowWash,
+                      color: AppColors.brandWash,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -223,7 +223,7 @@ class _PlanCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: best ? AppColors.yellowDeep : AppColors.line, width: best ? 2 : 1),
+        border: Border.all(color: best ? AppColors.brandDeep : AppColors.line, width: best ? 2 : 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -232,10 +232,10 @@ class _PlanCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
               decoration: const BoxDecoration(
-                color: AppColors.yellow,
+                color: AppColors.brand,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
-              child: Text('BEST VALUE', textAlign: TextAlign.center, style: AppText.tiny.copyWith(color: AppColors.ink, letterSpacing: 1)),
+              child: Text('BEST VALUE', textAlign: TextAlign.center, style: AppText.tiny.copyWith(color: Colors.white, letterSpacing: 1)),
             ),
           Padding(
             padding: const EdgeInsets.all(16),

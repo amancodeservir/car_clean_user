@@ -74,7 +74,10 @@ class _ServicesScreenState extends State<ServicesScreen> {
                     child: ChoiceChip(
                       label: Text(group.$2),
                       selected: _group == group.$1,
-                      selectedColor: AppColors.yellow,
+                      selectedColor: AppColors.brand,
+                      labelStyle: AppText.smallStrong.copyWith(
+                        color: _group == group.$1 ? Colors.white : AppColors.ink,
+                      ),
                       onSelected: (_) => setState(() => _group = group.$1),
                     ),
                   ),
@@ -83,7 +86,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
           ),
           const SizedBox(height: 12),
           AppCard(
-            color: AppColors.yellowWash,
+            color: AppColors.brandWash,
             onTap: () => vehicle == null ? addVehicle(context) : pickVehicle(context),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Row(

@@ -93,7 +93,7 @@ class _ConfirmedScreenState extends State<ConfirmedScreen> {
                   if (booking.paymentMethod == 'Online' && !booking.isPaid) ...[
                     const SizedBox(height: 12),
                     AppCard(
-                      color: AppColors.yellowWash,
+                      color: AppColors.brandWash,
                       child: Row(
                         children: [
                           const Icon(Icons.credit_card_rounded),

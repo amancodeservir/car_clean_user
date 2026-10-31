@@ -287,7 +287,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     FilterChip(
                       label: Text('${addon.name}  +${rupees(addon.amount)}'),
                       selected: _addons.contains(addon.name),
-                      selectedColor: AppColors.yellowSoft,
+                      selectedColor: AppColors.brandSoft,
                       avatar: Icon(_addons.contains(addon.name) ? Icons.check_rounded : Icons.add_rounded, size: 16),
                       onSelected: (selected) {
                         setState(() => selected ? _addons.add(addon.name) : _addons.remove(addon.name));
@@ -519,7 +519,7 @@ class _PickRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       onTap: onTap,
-      color: missing ? AppColors.yellowWash : null,
+      color: missing ? AppColors.brandWash : null,
       child: Row(
         children: [
           Icon(icon, size: 24),
@@ -647,7 +647,7 @@ class _PayOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       onTap: onTap,
-      color: selected ? AppColors.yellowWash : null,
+      color: selected ? AppColors.brandWash : null,
       child: Row(
         children: [
           Icon(icon, size: 22),

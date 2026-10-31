@@ -301,10 +301,10 @@ class ServiceProof extends StatelessWidget {
       if (stats.bookings30d > 0)
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(color: AppColors.yellowSoft, borderRadius: BorderRadius.circular(6)),
+          decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(6)),
           child: Text(
             '${compactCount(stats.bookings30d)}+ bookings in last 30 days',
-            style: AppText.tiny.copyWith(color: const Color(0xFF8A6400), fontWeight: FontWeight.w700),
+            style: AppText.tiny.copyWith(color: AppColors.brandDeep, fontWeight: FontWeight.w700),
           ),
         ),
     ];
@@ -384,7 +384,7 @@ class EmptyState extends StatelessWidget {
           Container(
             width: 72,
             height: 72,
-            decoration: const BoxDecoration(color: AppColors.yellowSoft, shape: BoxShape.circle),
+            decoration: const BoxDecoration(color: AppColors.brandSoft, shape: BoxShape.circle),
             child: Icon(icon, size: 34, color: AppColors.ink),
           ),
           const SizedBox(height: 16),
@@ -408,7 +408,7 @@ class Sparkle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Icon(Icons.auto_awesome, size: size, color: const Color(0xFFD4A20B));
+      Icon(Icons.auto_awesome, size: size, color: AppColors.brand);
 }
 
 /// An image from a `data:image/...;base64,` string or an http URL.

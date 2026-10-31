@@ -90,8 +90,8 @@ class _Contact extends StatelessWidget {
             Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(color: AppColors.yellow, shape: BoxShape.circle),
-              child: Icon(icon),
+              decoration: const BoxDecoration(color: AppColors.brand, shape: BoxShape.circle),
+              child: Icon(icon, color: Colors.white),
             ),
             const SizedBox(height: 8),
             Text(label, style: AppText.smallStrong),

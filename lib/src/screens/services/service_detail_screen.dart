@@ -214,7 +214,7 @@ class _VehiclePrice extends StatelessWidget {
     final catalog = context.watch<CatalogProvider>();
     final current = vehicle;
     return AppCard(
-      color: AppColors.yellowWash,
+      color: AppColors.brandWash,
       onTap: () => current == null ? addVehicle(context) : pickVehicle(context),
       child: Row(
         children: [
@@ -295,8 +295,8 @@ class _Step extends StatelessWidget {
             width: 28,
             height: 28,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: AppColors.yellow, shape: BoxShape.circle),
-            child: Text('$number', style: AppText.smallStrong),
+            decoration: const BoxDecoration(color: AppColors.brand, shape: BoxShape.circle),
+            child: Text('$number', style: AppText.smallStrong.copyWith(color: Colors.white)),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const yellow = Color(0xFFFFC917);
-  static const yellowDeep = Color(0xFFF2B600);
-  static const yellowSoft = Color(0xFFFFF4C4);
-  static const yellowWash = Color(0xFFFFFBEA);
+  // Brand blues, taken from carcleanplus.com (frontend/tailwind.config.js).
+  static const brand = Color(0xFF1D4ED8);
+  static const brandDeep = Color(0xFF1E40AF);
+  static const brandLight = Color(0xFF3377FF);
+  static const brandSoft = Color(0xFFDBEAFE);
+  static const brandWash = Color(0xFFEEF4FF);
+
+  /// Accent for text and icons on dark ([ink]) backgrounds.
+  static const brandOnDark = Color(0xFF93C5FD);
+
+  /// Top of the header wash; also the status-bar colour above it.
+  static const headerTop = Color(0xFFD6E4FF);
 
   static const ink = Color(0xFF111827);
   static const inkSoft = Color(0xFF374151);
   static const mute = Color(0xFF6B7280);
   static const faint = Color(0xFF9CA3AF);
-  static const line = Color(0xFFE8E8E3);
-  static const paper = Color(0xFFF7F7F4);
+  static const line = Color(0xFFE2E8F0);
+  static const paper = Color(0xFFF4F7FB);
   static const surface = Colors.white;
 
   static const navy = Color(0xFF1E3A8A);
@@ -23,11 +31,11 @@ class AppColors {
   static const orange = Color(0xFFC2410C);
   static const orangeSoft = Color(0xFFFFF1E6);
 
-  /// The pale yellow wash used behind headers, as in the store screenshots.
+  /// The pale blue wash used behind headers, like the website's hero.
   static const headerGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFFFFE680), Color(0xFFFFF6CC), paper],
+    colors: [headerTop, brandWash, paper],
     stops: [0, 0.55, 1],
   );
 }
@@ -71,8 +79,8 @@ class AppTheme {
       fontFamily: AppText.family,
       scaffoldBackgroundColor: AppColors.paper,
       colorScheme: const ColorScheme.light(
-        primary: AppColors.yellow,
-        onPrimary: AppColors.ink,
+        primary: AppColors.brand,
+        onPrimary: Colors.white,
         secondary: AppColors.ink,
         onSecondary: Colors.white,
         surface: Colors.white,
@@ -112,9 +120,9 @@ class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.yellow,
-          foregroundColor: AppColors.ink,
-          disabledBackgroundColor: const Color(0xFFF3E6B0),
+          backgroundColor: AppColors.brand,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: const Color(0xFFC7D6F5),
           disabledForegroundColor: AppColors.mute,
           minimumSize: const Size(0, 50),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -136,7 +144,7 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.ink,
+          foregroundColor: AppColors.brand,
           textStyle: AppText.smallStrong.copyWith(fontSize: 14),
         ),
       ),
@@ -147,7 +155,7 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
         hintStyle: AppText.body.copyWith(color: AppColors.faint),
         labelStyle: AppText.body.copyWith(color: AppColors.mute),
-        floatingLabelStyle: AppText.small.copyWith(color: AppColors.ink),
+        floatingLabelStyle: AppText.small.copyWith(color: AppColors.brand),
         prefixIconColor: AppColors.mute,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -159,7 +167,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.ink, width: 1.4),
+          borderSide: const BorderSide(color: AppColors.brand, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -168,26 +176,24 @@ class AppTheme {
       ),
       chipTheme: base.chipTheme.copyWith(
         backgroundColor: Colors.white,
-        selectedColor: AppColors.yellowSoft,
+        selectedColor: AppColors.brandSoft,
         labelStyle: AppText.smallStrong,
         side: const BorderSide(color: AppColors.line),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         showCheckmark: false,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? AppColors.ink : Colors.white,
-        ),
+        thumbColor: WidgetStateProperty.all(Colors.white),
         trackColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? AppColors.yellow : AppColors.line,
+          (states) => states.contains(WidgetState.selected) ? AppColors.brand : AppColors.line,
         ),
         trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? AppColors.ink : Colors.white,
+          (states) => states.contains(WidgetState.selected) ? AppColors.brand : Colors.white,
         ),
-        checkColor: WidgetStateProperty.all(AppColors.yellow),
+        checkColor: WidgetStateProperty.all(Colors.white),
         side: const BorderSide(color: AppColors.faint, width: 1.4),
       ),
       snackBarTheme: SnackBarThemeData(
@@ -211,16 +217,16 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
       ),
       dividerTheme: const DividerThemeData(color: AppColors.line, thickness: 1, space: 1),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.ink),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.brand),
       tabBarTheme: TabBarThemeData(
-        labelColor: AppColors.ink,
+        labelColor: Colors.white,
         unselectedLabelColor: AppColors.mute,
         labelStyle: AppText.smallStrong.copyWith(fontSize: 14),
         unselectedLabelStyle: AppText.small.copyWith(fontSize: 14),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
         indicator: BoxDecoration(
-          color: AppColors.yellow,
+          color: AppColors.brand,
           borderRadius: BorderRadius.circular(10),
         ),
       ),

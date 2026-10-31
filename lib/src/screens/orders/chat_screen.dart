@@ -141,7 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     const SizedBox(width: 6),
                     IconButton.filled(
                       tooltip: 'Send',
-                      style: IconButton.styleFrom(backgroundColor: AppColors.yellow, foregroundColor: AppColors.ink),
+                      style: IconButton.styleFrom(backgroundColor: AppColors.brand, foregroundColor: Colors.white),
                       onPressed: _sending ? null : _send,
                       icon: _sending
                           ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
@@ -178,14 +178,14 @@ class _Bubble extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         decoration: BoxDecoration(
-          color: mine ? AppColors.yellowSoft : Colors.white,
+          color: mine ? AppColors.brandSoft : Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(14),
             topRight: const Radius.circular(14),
             bottomLeft: Radius.circular(mine ? 14 : 4),
             bottomRight: Radius.circular(mine ? 4 : 14),
           ),
-          border: Border.all(color: mine ? const Color(0xFFF3E1A0) : AppColors.line),
+          border: Border.all(color: mine ? const Color(0xFFBFD4FA) : AppColors.line),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

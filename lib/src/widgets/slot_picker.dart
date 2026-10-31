@@ -114,18 +114,22 @@ class _SlotPickerState extends State<SlotPicker> {
                 child: Container(
                   width: 58,
                   decoration: BoxDecoration(
-                    color: selected ? AppColors.yellow : (closed ? AppColors.paper : Colors.white),
+                    color: selected ? AppColors.brand : (closed ? AppColors.paper : Colors.white),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: selected ? AppColors.yellowDeep : AppColors.line),
+                    border: Border.all(color: selected ? AppColors.brandDeep : AppColors.line),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(weekday(day),
-                          style: AppText.tiny.copyWith(color: closed ? AppColors.faint : AppColors.inkSoft)),
-                      Text('${day.day}', style: AppText.h3.copyWith(color: closed ? AppColors.faint : AppColors.ink)),
+                          style: AppText.tiny.copyWith(
+                              color: selected ? AppColors.brandSoft : (closed ? AppColors.faint : AppColors.inkSoft))),
+                      Text('${day.day}',
+                          style: AppText.h3.copyWith(
+                              color: selected ? Colors.white : (closed ? AppColors.faint : AppColors.ink))),
                       Text(month(day),
-                          style: AppText.tiny.copyWith(color: closed ? AppColors.faint : AppColors.inkSoft)),
+                          style: AppText.tiny.copyWith(
+                              color: selected ? AppColors.brandSoft : (closed ? AppColors.faint : AppColors.inkSoft))),
                     ],
                   ),
                 ),
