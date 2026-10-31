@@ -203,32 +203,37 @@ class _BookingScreenState extends State<BookingScreen> {
               : IconButton(onPressed: () => context.go('/home'), icon: const Icon(Icons.arrow_back_rounded)),
         ),
         body: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 6, 16, 24),
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 20),
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           children: [
             // Service
             AppCard(
+              padding: const EdgeInsets.all(10),
               child: Row(
                 children: [
-                  Photo(Photos.forService(_service), width: 64, height: 64),
-                  const SizedBox(width: 12),
+                  Photo(Photos.forService(_service), width: 52, height: 52),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(info?.title ?? _service, style: AppText.h3),
+                        Text(info?.title ?? _service, style: AppText.bodyStrong),
                         if (info != null && info.durationLabel.isNotEmpty)
-                          Text('About ${info.durationLabel}', style: AppText.small),
-                        const SizedBox(height: 4),
+                          Text('About ${info.durationLabel}', style: AppText.tiny),
+                        const SizedBox(height: 3),
                         if (vehicle != null) PriceLine(catalog.price(_service, vehicle.category)),
                       ],
                     ),
                   ),
-                  TextButton(onPressed: _changeService, child: const Text('Change')),
+                  TextButton(
+                    style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                    onPressed: _changeService,
+                    child: const Text('Change'),
+                  ),
                 ],
               ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
             const _Step('1', 'Vehicle'),
             _PickRow(
               icon: vehicleIcon(vehicle),
@@ -247,7 +252,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 if (picked != null) _requote();
               },
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
             const _Step('2', 'Address'),
             _PickRow(
               icon: addressIcon(address?.label ?? ''),
@@ -264,7 +269,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 if (picked != null) _requote();
               },
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
             const _Step('3', 'Date and time'),
             SlotPicker(
               city: _city,
@@ -275,20 +280,21 @@ class _BookingScreenState extends State<BookingScreen> {
                 });
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
             if (catalog.addons.isNotEmpty) ...[
-              Text('Add-ons', style: AppText.h3),
-              const SizedBox(height: 8),
+              Text('Add-ons', style: AppText.bodyStrong),
+              const SizedBox(height: 6),
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: 6,
+                runSpacing: 6,
                 children: [
                   for (final addon in catalog.addons)
                     FilterChip(
-                      label: Text('${addon.name}  +${rupees(addon.amount)}'),
+                      visualDensity: VisualDensity.compact,
+                      label: Text('${addon.name}  +${rupees(addon.amount)}', style: AppText.tiny),
                       selected: _addons.contains(addon.name),
                       selectedColor: AppColors.brandSoft,
-                      avatar: Icon(_addons.contains(addon.name) ? Icons.check_rounded : Icons.add_rounded, size: 16),
+                      avatar: Icon(_addons.contains(addon.name) ? Icons.check_rounded : Icons.add_rounded, size: 14),
                       onSelected: (selected) {
                         setState(() => selected ? _addons.add(addon.name) : _addons.remove(addon.name));
                         _requote();
@@ -296,10 +302,10 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                 ],
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 12),
             ],
-            Text('Offers and savings', style: AppText.h3),
-            const SizedBox(height: 8),
+            Text('Offers and savings', style: AppText.bodyStrong),
+            const SizedBox(height: 6),
             _PromoField(
               controller: _promo,
               applied: _appliedPromo,
@@ -317,7 +323,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 _requote();
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             _ToggleTile(
               icon: Icons.water_drop_outlined,
               title: 'I will provide water and power',
@@ -350,9 +356,9 @@ class _BookingScreenState extends State<BookingScreen> {
                   _requote();
                 },
               ),
-            const SizedBox(height: 18),
-            Text('Payment', style: AppText.h3),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+            Text('Payment', style: AppText.bodyStrong),
+            const SizedBox(height: 6),
             _PayOption(
               icon: Icons.payments_outlined,
               title: 'Pay after service',
@@ -360,7 +366,7 @@ class _BookingScreenState extends State<BookingScreen> {
               selected: !_payOnline,
               onTap: () => setState(() => _payOnline = false),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             _PayOption(
               icon: Icons.credit_card_rounded,
               title: 'Pay online now',
@@ -368,7 +374,7 @@ class _BookingScreenState extends State<BookingScreen> {
               selected: _payOnline,
               onTap: () => setState(() => _payOnline = true),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
             if (needsPhone) ...[
               TextField(
                 controller: _phone,
@@ -405,7 +411,7 @@ class _BookingScreenState extends State<BookingScreen> {
           child: SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(18, 10, 16, 10),
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
               child: Row(
                 children: [
                   Expanded(
@@ -413,13 +419,13 @@ class _BookingScreenState extends State<BookingScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('To pay', style: AppText.small),
-                        Text(_quote == null ? '—' : rupees(_quote!.total), style: AppText.h2),
+                        Text('To pay', style: AppText.tiny),
+                        Text(_quote == null ? '—' : rupees(_quote!.total), style: AppText.title),
                       ],
                     ),
                   ),
                   SizedBox(
-                    width: 190,
+                    width: 170,
                     child: PrimaryButton(
                       label: _payOnline ? 'Book & pay' : 'Confirm booking',
                       loading: _submitting,
@@ -520,16 +526,17 @@ class _PickRow extends StatelessWidget {
     return AppCard(
       onTap: onTap,
       color: missing ? AppColors.brandWash : null,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Icon(icon, size: 24),
-          const SizedBox(width: 12),
+          Icon(icon, size: 20),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: AppText.title),
-                const SizedBox(height: 2),
+                const SizedBox(height: 1),
                 Text(subtitle, style: AppText.small, maxLines: 2, overflow: TextOverflow.ellipsis),
               ],
             ),
@@ -554,13 +561,17 @@ class _PromoField extends StatelessWidget {
     if (applied.isNotEmpty) {
       return AppCard(
         color: AppColors.greenSoft,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Row(
           children: [
-            const Icon(Icons.local_offer_rounded, color: AppColors.green, size: 20),
-            const SizedBox(width: 10),
+            const Icon(Icons.local_offer_rounded, color: AppColors.green, size: 18),
+            const SizedBox(width: 8),
             Expanded(child: Text('$applied applied', style: AppText.smallStrong.copyWith(color: AppColors.green))),
-            TextButton(onPressed: onRemove, child: const Text('Remove')),
+            TextButton(
+              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+              onPressed: onRemove,
+              child: const Text('Remove'),
+            ),
           ],
         ),
       );
@@ -574,12 +585,16 @@ class _PromoField extends StatelessWidget {
             onSubmitted: (_) => onApply(),
             decoration: const InputDecoration(
               hintText: 'Coupon code',
-              prefixIcon: Icon(Icons.local_offer_outlined, size: 20),
+              prefixIcon: Icon(Icons.local_offer_outlined, size: 18),
             ),
           ),
         ),
         const SizedBox(width: 8),
-        OutlinedButton(onPressed: onApply, child: const Text('Apply')),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+          onPressed: onApply,
+          child: const Text('Apply'),
+        ),
       ],
     );
   }
@@ -603,24 +618,27 @@ class _ToggleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 6),
       child: AppCard(
-        padding: const EdgeInsets.fromLTRB(14, 6, 6, 6),
+        padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
         onTap: () => onChanged(!value),
         child: Row(
           children: [
-            Icon(icon, size: 22),
-            const SizedBox(width: 12),
+            Icon(icon, size: 20),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppText.title),
+                  Text(title, style: AppText.bodyStrong),
                   Text(subtitle, style: AppText.small),
                 ],
               ),
             ),
-            Switch(value: value, onChanged: onChanged),
+            Transform.scale(
+              scale: 0.85,
+              child: Switch(value: value, onChanged: onChanged),
+            ),
           ],
         ),
       ),
@@ -648,21 +666,23 @@ class _PayOption extends StatelessWidget {
     return AppCard(
       onTap: onTap,
       color: selected ? AppColors.brandWash : null,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Icon(icon, size: 22),
-          const SizedBox(width: 12),
+          Icon(icon, size: 20),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppText.title),
+                Text(title, style: AppText.bodyStrong),
                 Text(subtitle, style: AppText.small),
               ],
             ),
           ),
           Icon(
             selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
+            size: 20,
             color: selected ? AppColors.ink : AppColors.faint,
           ),
         ],
@@ -683,25 +703,26 @@ class _Bill extends StatelessWidget {
   Widget build(BuildContext context) {
     final current = quote;
     return AppCard(
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Text('Bill details', style: AppText.h3),
+              Text('Bill details', style: AppText.bodyStrong),
               const Spacer(),
-              if (loading) const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+              if (loading) const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           if (!hasVehicle)
             Text('Add your vehicle to see the price.', style: AppText.small)
           else if (error != null)
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.info_outline_rounded, color: AppColors.red, size: 18),
-                const SizedBox(width: 8),
+                const Icon(Icons.info_outline_rounded, color: AppColors.red, size: 16),
+                const SizedBox(width: 6),
                 Expanded(child: Text(error!, style: AppText.small.copyWith(color: AppColors.red))),
               ],
             )
@@ -715,9 +736,9 @@ class _Bill extends StatelessWidget {
               _line(current.planUsed ? 'Plan wash and coupon' : 'Coupon discount', '-${rupees(current.discount - current.waterDiscount)}', green: true),
             if (current.travelFee > 0) _line('Travel fee', rupees(current.travelFee)),
             if (current.creditUsed > 0) _line('Referral credit', '-${rupees(current.creditUsed)}', green: true),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Divider()),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 6), child: Divider(height: 1)),
             _line('To pay', rupees(current.total), strong: true),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text('Prices include GST.', style: AppText.tiny),
           ],
         ],
@@ -726,9 +747,9 @@ class _Bill extends StatelessWidget {
   }
 
   Widget _line(String label, String value, {bool strong = false, bool green = false}) {
-    final style = strong ? AppText.h3 : AppText.body;
+    final style = strong ? AppText.title : AppText.small;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
           Expanded(child: Text(label, style: style)),

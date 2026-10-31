@@ -100,27 +100,27 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         color: AppColors.ink,
         onRefresh: _load,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 6, 16, 28),
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 20),
           children: [
             _StatusCard(booking),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             if (booking.washerName.isNotEmpty) ...[
               _WasherCard(booking),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
             ],
             _DetailsCard(booking),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             _PaymentCard(
               booking,
               working: _working,
               onPay: () => _pay(booking),
             ),
             if (RemotePhoto.canShow(booking.beforePhoto) || RemotePhoto.canShow(booking.afterPhoto)) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               _PhotosCard(booking),
             ],
             if (booking.isCompleted) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               _RateCard(booking, onRate: (rating, review) {
                 return _run(
                   () => context.read<BookingsProvider>().rate(booking.id, rating, review),
@@ -129,10 +129,10 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               }),
             ],
             if (booking.reports.isNotEmpty) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               _ReportsCard(booking),
             ],
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _Actions(
               booking,
               working: _working,
@@ -140,7 +140,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               onReschedule: () => _reschedule(booking),
               onReport: () => _report(booking),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             _Activity(booking),
           ],
         ),

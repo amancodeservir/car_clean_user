@@ -19,7 +19,7 @@ class AppColors {
   static const mute = Color(0xFF6B7280);
   static const faint = Color(0xFF9CA3AF);
   static const line = Color(0xFFE2E8F0);
-  static const paper = Color(0xFFF4F7FB);
+  static const paper = Colors.white;
   static const surface = Colors.white;
 
   static const navy = Color(0xFF1E3A8A);
@@ -35,7 +35,7 @@ class AppColors {
   static const headerGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [headerTop, brandWash, paper],
+    colors: [headerTop, brandWash, surface],
     stops: [0, 0.55, 1],
   );
 }
@@ -77,13 +77,13 @@ class AppTheme {
     final base = ThemeData(
       useMaterial3: true,
       fontFamily: AppText.family,
-      scaffoldBackgroundColor: AppColors.paper,
+      scaffoldBackgroundColor: AppColors.surface,
       colorScheme: const ColorScheme.light(
         primary: AppColors.brand,
         onPrimary: Colors.white,
         secondary: AppColors.ink,
         onSecondary: Colors.white,
-        surface: Colors.white,
+        surface: AppColors.surface,
         onSurface: AppColors.ink,
         error: AppColors.red,
       ),
@@ -110,7 +110,7 @@ class AppTheme {
     return base.copyWith(
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.paper,
+        backgroundColor: AppColors.surface,
         foregroundColor: AppColors.ink,
         surfaceTintColor: Colors.transparent,
         elevation: 0,

@@ -38,23 +38,24 @@ class _PickVehicleSheet extends StatelessWidget {
     final current = account.vehicle;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Select your vehicle', style: AppText.h2),
-            const SizedBox(height: 4),
-            Text('Prices follow the size of the vehicle.', style: AppText.small),
-            const SizedBox(height: 14),
+            Text('Select your vehicle', style: AppText.h3),
+            const SizedBox(height: 2),
+            Text('Prices follow the size of the vehicle.', style: AppText.tiny),
+            const SizedBox(height: 10),
             Flexible(
               child: ListView(
                 shrinkWrap: true,
                 children: [
                   for (final vehicle in account.vehicles)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 6),
                       child: AppCard(
+                        padding: const EdgeInsets.all(10),
                         color: vehicle == current ? AppColors.brandWash : null,
                         onTap: () async {
                           await account.selectVehicle(vehicle);
@@ -63,12 +64,12 @@ class _PickVehicleSheet extends StatelessWidget {
                         child: Row(
                           children: [
                             _VehicleBadge(vehicle),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(vehicle.name, style: AppText.title),
+                                  Text(vehicle.name, style: AppText.bodyStrong),
                                   Text(
                                     [vehicle.sizeLabel, if (vehicle.plate.isNotEmpty) vehicle.plate].join(' · '),
                                     style: AppText.small,
@@ -78,6 +79,7 @@ class _PickVehicleSheet extends StatelessWidget {
                             ),
                             Icon(
                               vehicle == current ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
+                              size: 20,
                               color: vehicle == current ? AppColors.ink : AppColors.faint,
                             ),
                           ],
@@ -87,13 +89,14 @@ class _PickVehicleSheet extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
               onPressed: () async {
                 final added = await addVehicle(context);
                 if (added != null && context.mounted) Navigator.pop(context, added);
               },
-              icon: const Icon(Icons.add_rounded),
+              icon: const Icon(Icons.add_rounded, size: 18),
               label: const Text('Add a vehicle'),
             ),
           ],
@@ -111,10 +114,10 @@ class _VehicleBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(12)),
-      child: Icon(vehicleIcon(vehicle), color: AppColors.ink),
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(10)),
+      child: Icon(vehicleIcon(vehicle), size: 20, color: AppColors.ink),
     );
   }
 }

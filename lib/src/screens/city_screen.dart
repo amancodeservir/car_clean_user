@@ -54,7 +54,7 @@ class _CityScreenState extends State<CityScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Select your city')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+        padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
         children: [
           TextField(
             controller: _search,
@@ -62,47 +62,48 @@ class _CityScreenState extends State<CityScreen> {
             decoration:
                 const InputDecoration(hintText: 'Search city', prefixIcon: Icon(Icons.search_rounded, size: 20)),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           AppCard(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             onTap: _locating ? null : _locate,
             child: Row(
               children: [
                 _locating
-                    ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Icon(Icons.my_location_rounded, color: AppColors.navy),
-                const SizedBox(width: 12),
-                Expanded(child: Text('Use my current location', style: AppText.title.copyWith(color: AppColors.navy))),
-                const Icon(Icons.chevron_right_rounded, color: AppColors.faint),
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.my_location_rounded, size: 20, color: AppColors.navy),
+                const SizedBox(width: 10),
+                Expanded(child: Text('Use my current location', style: AppText.bodyStrong.copyWith(color: AppColors.navy))),
+                const Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.faint),
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          Text('We wash in', style: AppText.h3),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
+          Text('We wash in', style: AppText.bodyStrong),
+          const SizedBox(height: 8),
           GridView.count(
             padding: EdgeInsets.zero,
             crossAxisCount: 3,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 0.95,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.0,
             children: [
               for (final city in cities)
                 AppCard(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(6),
                   color: city.name == catalog.city ? AppColors.brandWash : null,
                   onTap: () => _pick(city.name),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 52,
+                        height: 42,
                         child: Photos.cityImages[city.name] == null
-                            ? const Icon(Icons.location_city_rounded, size: 40, color: AppColors.brandDeep)
+                            ? const Icon(Icons.location_city_rounded, size: 34, color: AppColors.brandDeep)
                             : Image.asset(Photos.cityImages[city.name]!, fit: BoxFit.contain),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text(city.name,
                           style: AppText.smallStrong,
                           textAlign: TextAlign.center,

@@ -52,7 +52,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 300 + top,
+              height: 220 + top,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -73,15 +73,15 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                     ),
                   ),
                   Positioned(
-                    top: top + 8,
-                    left: 12,
+                    top: top + 6,
+                    left: 10,
                     child: _RoundButton(
                       icon: Icons.arrow_back_rounded,
                       onTap: () => context.canPop() ? context.pop() : context.go('/home'),
                     ),
                   ),
                   Positioned(
-                    bottom: 14,
+                    bottom: 10,
                     left: 0,
                     right: 0,
                     child: Row(
@@ -90,8 +90,8 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                         for (var i = 0; i < gallery.length; i++)
                           Container(
                             margin: const EdgeInsets.symmetric(horizontal: 3),
-                            width: i == _photo ? 18 : 6,
-                            height: 6,
+                            width: i == _photo ? 16 : 5,
+                            height: 5,
                             decoration: BoxDecoration(
                               color: i == _photo ? Colors.white : Colors.white54,
                               borderRadius: BorderRadius.circular(3),
@@ -105,41 +105,41 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 24),
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
             sliver: SliverList.list(
               children: [
-                Text(info.title, style: AppText.h1),
-                const SizedBox(height: 4),
+                Text(info.title, style: AppText.h2),
+                const SizedBox(height: 3),
                 Text(info.tagline, style: AppText.body),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 ServiceProof(stats),
-                const SizedBox(height: 14),
+                const SizedBox(height: 10),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: [
                     if (info.durationLabel.isNotEmpty) _Meta(Icons.schedule_rounded, 'Takes ${info.durationLabel}'),
                     const _Meta(Icons.home_work_outlined, 'At your doorstep'),
                     const _Meta(Icons.payments_outlined, 'Pay after service'),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 14),
                 _VehiclePrice(vehicle: vehicle, service: info.name),
-                const SizedBox(height: 22),
+                const SizedBox(height: 16),
                 Text("What's included", style: AppText.h3),
-                const SizedBox(height: 10),
-                for (final item in info.inclusions) Bullet(item),
-                const SizedBox(height: 18),
-                Text('About this service', style: AppText.h3),
                 const SizedBox(height: 8),
+                for (final item in info.inclusions) Bullet(item),
+                const SizedBox(height: 14),
+                Text('About this service', style: AppText.h3),
+                const SizedBox(height: 6),
                 Text(info.description, style: AppText.body),
-                const SizedBox(height: 22),
+                const SizedBox(height: 16),
                 Text('How it works', style: AppText.h3),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 const _Step(1, 'Pick a slot', 'Choose a day and time that suits you.'),
                 const _Step(2, 'We come to you', 'A trained washer reaches your parking spot with all equipment.'),
                 const _Step(3, 'Pay and rate', 'Check the before and after photos, pay, and rate the wash.'),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 _AllSizes(service: info.name),
               ],
             ),
@@ -170,7 +170,7 @@ class _RoundButton extends StatelessWidget {
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
-        child: SizedBox(width: 42, height: 42, child: Icon(icon, size: 22)),
+        child: SizedBox(width: 36, height: 36, child: Icon(icon, size: 20)),
       ),
     );
   }
@@ -185,17 +185,17 @@ class _Meta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(color: AppColors.line),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 15, color: AppColors.inkSoft),
-          const SizedBox(width: 5),
+          Icon(icon, size: 14, color: AppColors.inkSoft),
+          const SizedBox(width: 4),
           Text(label, style: AppText.tiny.copyWith(color: AppColors.inkSoft)),
         ],
       ),
@@ -215,11 +215,12 @@ class _VehiclePrice extends StatelessWidget {
     final current = vehicle;
     return AppCard(
       color: AppColors.brandWash,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       onTap: () => current == null ? addVehicle(context) : pickVehicle(context),
       child: Row(
         children: [
-          Icon(vehicleIcon(current), size: 26),
-          const SizedBox(width: 12),
+          Icon(vehicleIcon(current), size: 22),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,11 +262,11 @@ class _AllSizes extends StatelessWidget {
         children: [
           for (final category in rows)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
-                  Icon(category == 'Bike' ? Icons.two_wheeler_rounded : Icons.directions_car_rounded, size: 18, color: AppColors.mute),
-                  const SizedBox(width: 10),
+                  Icon(category == 'Bike' ? Icons.two_wheeler_rounded : Icons.directions_car_rounded, size: 16, color: AppColors.mute),
+                  const SizedBox(width: 8),
                   Expanded(child: Text(Vehicle(name: '', category: category).sizeLabel, style: AppText.body)),
                   Text(rupees(catalog.price(service, category).amount), style: AppText.bodyStrong),
                 ],
@@ -287,23 +288,23 @@ class _Step extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 28,
-            height: 28,
+            width: 24,
+            height: 24,
             alignment: Alignment.center,
             decoration: const BoxDecoration(color: AppColors.brand, shape: BoxShape.circle),
-            child: Text('$number', style: AppText.smallStrong.copyWith(color: Colors.white)),
+            child: Text('$number', style: AppText.tiny.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppText.title),
+                Text(title, style: AppText.bodyStrong),
                 Text(body, style: AppText.small),
               ],
             ),
@@ -331,7 +332,7 @@ class _BookBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 10, 16, 10),
+          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
           child: Row(
             children: [
               Expanded(
@@ -339,13 +340,13 @@ class _BookBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(exact ? 'Price' : 'Starting at', style: AppText.small),
-                    Text(price > 0 ? rupees(price) : '—', style: AppText.h2),
+                    Text(exact ? 'Price' : 'Starting at', style: AppText.tiny),
+                    Text(price > 0 ? rupees(price) : '—', style: AppText.title),
                   ],
                 ),
               ),
               SizedBox(
-                width: 170,
+                width: 140,
                 child: PrimaryButton(label: 'Book now', onPressed: price > 0 ? onBook : null),
               ),
             ],

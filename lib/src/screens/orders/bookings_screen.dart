@@ -44,20 +44,20 @@ class BookingsScreen extends StatelessWidget {
             ),
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(52),
+            preferredSize: const Size.fromHeight(46),
             child: Container(
-              margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              padding: const EdgeInsets.all(4),
+              margin: const EdgeInsets.fromLTRB(14, 0, 14, 6),
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: AppColors.line),
               ),
               child: const TabBar(
                 tabs: [
-                  Tab(height: 36, text: 'Upcoming'),
-                  Tab(height: 36, text: 'Completed'),
-                  Tab(height: 36, text: 'Cancelled'),
+                  Tab(height: 32, text: 'Upcoming'),
+                  Tab(height: 32, text: 'Completed'),
+                  Tab(height: 32, text: 'Cancelled'),
                 ],
               ),
             ),
@@ -111,25 +111,30 @@ class _BookingList extends StatelessWidget {
       color: AppColors.ink,
       onRefresh: () => provider.refresh(),
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 16),
         children: [
           if (provider.error != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 8),
               child: AppCard(
                 color: AppColors.redSoft,
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Icon(Icons.wifi_off_rounded, color: AppColors.red),
-                    const SizedBox(width: 10),
+                    const Icon(Icons.wifi_off_rounded, color: AppColors.red, size: 20),
+                    const SizedBox(width: 8),
                     Expanded(child: Text(provider.error!, style: AppText.small.copyWith(color: AppColors.red))),
-                    TextButton(onPressed: provider.refresh, child: const Text('Retry')),
+                    TextButton(
+                      style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                      onPressed: provider.refresh,
+                      child: const Text('Retry'),
+                    ),
                   ],
                 ),
               ),
             ),
           if (rows.isEmpty && provider.loading && !provider.loaded)
-            const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
+            const Padding(padding: EdgeInsets.all(32), child: Center(child: CircularProgressIndicator()))
           else if (rows.isEmpty) ...[
             empty,
             if (showBook)
@@ -137,7 +142,7 @@ class _BookingList extends StatelessWidget {
           ],
           for (final booking in rows) ...[
             BookingCard(booking),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
           ],
         ],
       ),
@@ -159,12 +164,12 @@ class BookingCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Photo(Photos.forService(booking.service), width: 64, height: 64),
-                const SizedBox(width: 12),
+                Photo(Photos.forService(booking.service), width: 56, height: 56),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,13 +181,13 @@ class BookingCard extends StatelessWidget {
                           Text(rupees(booking.price), style: AppText.title),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Text(booking.service, style: AppText.title),
                       Text(booking.vehicleName, style: AppText.small, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       Row(
                         children: [
-                          const Icon(Icons.event_rounded, size: 14, color: AppColors.mute),
+                          const Icon(Icons.event_rounded, size: 13, color: AppColors.mute),
                           const SizedBox(width: 4),
                           Text('${dayLabel(booking.date)} · ${booking.slotTime}', style: AppText.smallStrong),
                         ],
@@ -193,9 +198,9 @@ class BookingCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(),
+          const Divider(height: 1),
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 4, 6, 4),
+            padding: const EdgeInsets.fromLTRB(10, 2, 4, 2),
             child: Row(
               children: [
                 Expanded(
@@ -207,9 +212,17 @@ class BookingCard extends StatelessWidget {
                   ),
                 ),
                 if (booking.isCompleted || booking.isCancelled)
-                  TextButton(onPressed: () => context.push(bookPath(booking.service)), child: const Text('Book again'))
+                  TextButton(
+                    style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                    onPressed: () => context.push(bookPath(booking.service)),
+                    child: const Text('Book again'),
+                  )
                 else
-                  TextButton(onPressed: () => context.push('/booking/${booking.id}'), child: const Text('Track')),
+                  TextButton(
+                    style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                    onPressed: () => context.push('/booking/${booking.id}'),
+                    child: const Text('Track'),
+                  ),
               ],
             ),
           ),

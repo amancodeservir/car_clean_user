@@ -29,38 +29,40 @@ class VehiclesScreen extends StatelessWidget {
               ),
             )
           : ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 16),
               children: [
                 if (!signedIn)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: Text('Saved on this phone. Sign in to keep it on your account.', style: AppText.small),
                   ),
                 for (final vehicle in account.vehicles)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: AppCard(
                       color: vehicle == current ? AppColors.brandWash : null,
+                      padding: const EdgeInsets.all(10),
                       onTap: () => account.selectVehicle(vehicle),
                       child: Row(
                         children: [
-                          Icon(vehicleIcon(vehicle), size: 28),
-                          const SizedBox(width: 12),
+                          Icon(vehicleIcon(vehicle), size: 22),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(vehicle.name, style: AppText.title),
+                                Text(vehicle.name, style: AppText.bodyStrong),
                                 Text([vehicle.sizeLabel, if (vehicle.plate.isNotEmpty) vehicle.plate].join(' · '), style: AppText.small),
                                 if (vehicle == current)
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.only(top: 2),
                                     child: Text('Used for prices and bookings', style: AppText.tiny.copyWith(color: AppColors.green)),
                                   ),
                               ],
                             ),
                           ),
                           IconButton(
+                            visualDensity: VisualDensity.compact,
                             tooltip: 'Remove',
                             onPressed: () async {
                               final ok = await confirm(
@@ -77,16 +79,17 @@ class VehiclesScreen extends StatelessWidget {
                                 if (context.mounted) showMessage(context, errorText(error));
                               }
                             },
-                            icon: const Icon(Icons.delete_outline_rounded, color: AppColors.mute),
+                            icon: const Icon(Icons.delete_outline_rounded, size: 20, color: AppColors.mute),
                           ),
                         ],
                       ),
                     ),
                   ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
                   onPressed: () => addVehicle(context),
-                  icon: const Icon(Icons.add_rounded),
+                  icon: const Icon(Icons.add_rounded, size: 18),
                   label: const Text('Add a vehicle'),
                 ),
               ],

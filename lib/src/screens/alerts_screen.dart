@@ -52,32 +52,33 @@ class _AlertsScreenState extends State<AlertsScreen> {
                 ],
               )
             : ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 16),
                 itemCount: alerts.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final alert = alerts[index];
                   final linked = alert.bookingId.isNotEmpty && alert.bookingId != 'null';
                   return AppCard(
                     color: alert.read ? null : AppColors.brandWash,
+                    padding: const EdgeInsets.all(10),
                     onTap: linked ? () => context.push('/booking/${alert.bookingId}') : null,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 38,
-                          height: 38,
-                          decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(10)),
-                          child: const Icon(Icons.local_car_wash_rounded, size: 20),
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(color: AppColors.brandSoft, borderRadius: BorderRadius.circular(8)),
+                          child: const Icon(Icons.local_car_wash_rounded, size: 17),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  Expanded(child: Text(alert.title, style: AppText.title)),
+                                  Expanded(child: Text(alert.title, style: AppText.bodyStrong)),
                                   Text(timeAgo(alert.at), style: AppText.tiny),
                                 ],
                               ),
@@ -88,7 +89,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                             ],
                           ),
                         ),
-                        if (linked) const Icon(Icons.chevron_right_rounded, color: AppColors.faint),
+                        if (linked) const Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.faint),
                       ],
                     ),
                   );

@@ -50,7 +50,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: Form(
         key: _form,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 16),
           children: [
             TextFormField(
               controller: _name,
@@ -58,7 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               validator: (value) => (value ?? '').trim().length < 2 ? 'Enter your name' : null,
               decoration: const InputDecoration(labelText: 'Full name', prefixIcon: Icon(Icons.person_outline_rounded, size: 20)),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             TextFormField(
               controller: _phone,
               keyboardType: TextInputType.phone,
@@ -66,13 +66,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               validator: (value) => (value ?? '').isNotEmpty && value!.length != 10 ? 'Enter a 10 digit mobile number' : null,
               decoration: const InputDecoration(labelText: 'Mobile number', prefixIcon: Icon(Icons.phone_outlined, size: 20)),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             TextFormField(
               initialValue: email,
               enabled: false,
               decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.mail_outline_rounded, size: 20)),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             PrimaryButton(label: 'Save', loading: _saving, onPressed: _save),
           ],
         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
-import '../theme.dart';
 import '../widgets/ui.dart';
 
 /// Shown when a staff or admin account signs in to the customer app.
@@ -26,7 +25,6 @@ class DeskScreen extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: AppColors.paper,
     );
   }
 }

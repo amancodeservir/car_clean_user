@@ -26,22 +26,32 @@ class ProfileScreen extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
             decoration: const BoxDecoration(gradient: AppColors.headerGradient),
             child: user == null
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hello there', style: AppText.h1),
-                      const SizedBox(height: 4),
-                      Text('Sign in to book, track and pay for your washes.', style: AppText.body),
-                      const SizedBox(height: 16),
+                      Text('Hello there', style: AppText.title.copyWith(fontSize: 17)),
+                      const SizedBox(height: 2),
+                      Text('Sign in to book, track and pay for your washes.', style: AppText.small),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
-                          Expanded(child: PrimaryButton(label: 'Sign in', dark: true, onPressed: () => context.push('/login?from=/profile'))),
-                          const SizedBox(width: 10),
+                          Expanded(
+                            child: PrimaryButton(
+                              label: 'Sign in',
+                              dark: true,
+                              onPressed: () => context.push('/login?from=/profile'),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size(0, 42),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                              ),
                               onPressed: () => context.push('/signup?from=/profile'),
                               child: const Text('Create account'),
                             ),
@@ -53,50 +63,54 @@ class ProfileScreen extends StatelessWidget {
                 : Row(
                     children: [
                       CircleAvatar(
-                        radius: 30,
+                        radius: 23,
                         backgroundColor: AppColors.brand,
-                        child: Text(user.initial, style: AppText.h1.copyWith(color: Colors.white)),
+                        child: Text(user.initial, style: AppText.h3.copyWith(color: Colors.white)),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(user.name, style: AppText.h2, maxLines: 1, overflow: TextOverflow.ellipsis),
-                            Text(user.email, style: AppText.small, maxLines: 1, overflow: TextOverflow.ellipsis),
-                            if (user.phone.isNotEmpty) Text('+91 ${user.phone}', style: AppText.small),
+                            Text(user.name, style: AppText.title.copyWith(fontSize: 15), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            Text(user.email, style: AppText.tiny.copyWith(color: AppColors.mute, fontSize: 11), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            if (user.phone.isNotEmpty)
+                              Text('+91 ${user.phone}', style: AppText.tiny.copyWith(color: AppColors.mute, fontSize: 11)),
                           ],
                         ),
                       ),
                       IconButton(
                         tooltip: 'Edit profile',
+                        padding: const EdgeInsets.all(6),
+                        constraints: const BoxConstraints(),
                         onPressed: () => context.push('/profile/edit'),
-                        icon: const Icon(Icons.edit_outlined),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
                       ),
                     ],
                   ),
           ),
           if (user != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Row(
                 children: [
                   _Stat(label: 'Washes done', value: '$completed'),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   _Stat(label: 'Plan washes', value: account.plan.isActive ? '${account.plan.washesLeft}' : '0'),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   _Stat(label: 'Credit', value: rupees(account.plan.credit)),
                 ],
               ),
             ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
             child: _Group(children: [
               _Tile(Icons.directions_car_outlined, 'My vehicles', account.vehicles.isEmpty ? 'Add a car or bike' : '${account.vehicles.length} saved',
                   () => context.push('/vehicles')),
               if (user != null)
                 _Tile(Icons.location_on_outlined, 'Saved addresses',
-                    account.addresses.isEmpty ? 'Add where your vehicle is parked' : '${account.addresses.length} saved', () => context.push('/addresses')),
+                    account.addresses.isEmpty ? 'Add parking location' : '${account.addresses.length} saved', () => context.push('/addresses')),
               _Tile(Icons.workspace_premium_outlined, 'Wash plans', account.plan.isActive ? account.plan.planName : 'Save on every wash',
                   () => context.go('/plus')),
               if (user != null) _Tile(Icons.card_giftcard_rounded, 'Refer and earn', 'You both get ₹50', () => context.push('/refer')),
@@ -106,7 +120,7 @@ class ProfileScreen extends StatelessWidget {
             ]),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: _Group(children: [
               _Tile(Icons.support_agent_rounded, 'Help and support', 'Call, WhatsApp or email us', () => context.push('/help')),
               if (AppConfig.siteBase.isNotEmpty) ...[
@@ -117,7 +131,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           if (user != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: _Group(children: [
                 _Tile(Icons.logout_rounded, 'Log out', null, () async {
                   if (await confirm(context, title: 'Log out?', message: 'You can sign in again any time.', confirmLabel: 'Log out')) {
@@ -128,9 +142,14 @@ class ProfileScreen extends StatelessWidget {
                     danger: true),
               ]),
             ),
+          const SizedBox(height: 14),
+          Center(
+            child: Text(
+              '${AppConfig.appName} · Your car. Our care.',
+              style: AppText.tiny.copyWith(color: AppColors.faint, fontSize: 10.5),
+            ),
+          ),
           const SizedBox(height: 18),
-          Center(child: Text('${AppConfig.appName} · Your car. Our care.', style: AppText.tiny)),
-          const SizedBox(height: 28),
         ],
       ),
     );
@@ -164,13 +183,23 @@ class _Stat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: AppCard(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFEEF2F6)),
+          boxShadow: const [
+            BoxShadow(color: Color(0x06000000), blurRadius: 4, offset: Offset(0, 1)),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(value, style: AppText.h2),
-            Text(label, style: AppText.tiny),
+            Text(value, style: AppText.title.copyWith(fontSize: 15)),
+            const SizedBox(height: 1),
+            Text(label, style: AppText.tiny.copyWith(color: AppColors.mute, fontSize: 10.5), maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),
@@ -188,14 +217,17 @@ class _Group extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: const Color(0xFFEEF2F6)),
+        boxShadow: const [
+          BoxShadow(color: Color(0x05000000), blurRadius: 4, offset: Offset(0, 1)),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) const Divider(indent: 56),
+            if (i > 0) const Divider(indent: 48, height: 1),
             children[i],
           ],
         ],
@@ -217,11 +249,21 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = danger ? AppColors.red : AppColors.ink;
     return ListTile(
+      dense: true,
+      visualDensity: const VisualDensity(horizontal: -2, vertical: -2.5),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       onTap: onTap,
-      leading: Icon(icon, color: color),
-      title: Text(title, style: AppText.title.copyWith(color: color)),
-      subtitle: subtitle == null ? null : Text(subtitle!, style: AppText.small),
-      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.faint),
+      leading: Icon(icon, color: color, size: 20),
+      title: Text(title, style: AppText.bodyStrong.copyWith(color: color, fontSize: 13)),
+      subtitle: subtitle == null
+          ? null
+          : Text(
+              subtitle!,
+              style: AppText.tiny.copyWith(color: AppColors.mute, fontSize: 10.5),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.faint, size: 18),
     );
   }
 }

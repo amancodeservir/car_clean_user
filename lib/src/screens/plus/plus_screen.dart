@@ -71,7 +71,7 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
           padding: EdgeInsets.zero,
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -84,25 +84,25 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.workspace_premium_rounded, color: AppColors.brandOnDark, size: 28),
+                      const Icon(Icons.workspace_premium_rounded, color: AppColors.brandOnDark, size: 24),
                       const SizedBox(width: 8),
-                      Text('Car Clean Plus', style: AppText.h2.copyWith(color: AppColors.brandOnDark)),
+                      Text('Car Clean Plus', style: AppText.title.copyWith(color: AppColors.brandOnDark)),
                     ],
                   ),
-                  const SizedBox(height: 14),
-                  Text('Wash more,\npay less.', style: AppText.hero.copyWith(color: Colors.white)),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
+                  Text('Wash more, pay less.', style: AppText.h2.copyWith(color: Colors.white)),
+                  const SizedBox(height: 4),
                   Text(
                     'Buy a pack of doorstep washes and use them over 30 days.',
-                    style: AppText.body.copyWith(color: Colors.white70),
+                    style: AppText.small.copyWith(color: Colors.white70),
                   ),
                   if (plan.isActive) ...[
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.white24),
                       ),
                       child: Row(
@@ -111,18 +111,18 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Your plan: ${plan.planName}', style: AppText.title.copyWith(color: Colors.white)),
+                                Text('Your plan: ${plan.planName}', style: AppText.bodyStrong.copyWith(color: Colors.white)),
                                 if (plan.expiresAt != null)
                                   Text(
                                     'Valid till ${plan.expiresAt!.day} ${month(plan.expiresAt!)} ${plan.expiresAt!.year}',
-                                    style: AppText.small.copyWith(color: Colors.white70),
+                                    style: AppText.tiny.copyWith(color: Colors.white70),
                                   ),
                               ],
                             ),
                           ),
                           Column(
                             children: [
-                              Text('${plan.washesLeft}', style: AppText.h1.copyWith(color: AppColors.brandOnDark)),
+                              Text('${plan.washesLeft}', style: AppText.h2.copyWith(color: AppColors.brandOnDark)),
                               Text('washes left', style: AppText.tiny.copyWith(color: Colors.white70)),
                             ],
                           ),
@@ -134,24 +134,29 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (plan.pendingPlan.isNotEmpty) ...[
                     AppCard(
                       color: AppColors.brandWash,
+                      padding: const EdgeInsets.all(10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text('${plan.pendingPlan} is waiting for payment', style: AppText.title),
                           const SizedBox(height: 4),
                           Text('It turns on as soon as the payment goes through.', style: AppText.small),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(
-                                child: OutlinedButton(onPressed: account.refreshPlan, child: const Text('I have paid')),
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+                                  onPressed: account.refreshPlan,
+                                  child: const Text('I have paid'),
+                                ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -165,10 +170,10 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                   ],
-                  Text('Choose a plan', style: AppText.h2),
-                  const SizedBox(height: 12),
+                  Text('Choose a plan', style: AppText.title),
+                  const SizedBox(height: 8),
                   for (final row in plans) ...[
                     _PlanCard(
                       plan: row,
@@ -178,13 +183,15 @@ class _PlusScreenState extends State<PlusScreen> with WidgetsBindingObserver {
                       busy: _buying == row.name,
                       onBuy: () => _buy(row),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                   ],
-                  if (!plan.paymentsEnabled)
+                  if (!plan.paymentsEnabled) ...[
+                    const SizedBox(height: 6),
                     Text('Online payment is not switched on yet. Call us to buy a plan.', style: AppText.small, textAlign: TextAlign.center),
+                  ],
                   const SizedBox(height: 12),
-                  Text('What you get', style: AppText.h3),
-                  const SizedBox(height: 10),
+                  Text('What you get', style: AppText.title),
+                  const SizedBox(height: 8),
                   const Bullet('Doorstep washes at a lower price per wash', icon: Icons.savings_rounded),
                   const Bullet('Use a plan wash at checkout with one tap', icon: Icons.touch_app_rounded),
                   const Bullet('Same trained washers and before/after photos', icon: Icons.verified_rounded),
@@ -222,40 +229,40 @@ class _PlanCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: best ? AppColors.brandDeep : AppColors.line, width: best ? 2 : 1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: best ? AppColors.brandDeep : AppColors.line, width: best ? 1.5 : 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (best)
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               decoration: const BoxDecoration(
                 color: AppColors.brand,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
               ),
-              child: Text('BEST VALUE', textAlign: TextAlign.center, style: AppText.tiny.copyWith(color: Colors.white, letterSpacing: 1)),
+              child: Text('BEST VALUE', textAlign: TextAlign.center, style: AppText.tiny.copyWith(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 0.8)),
             ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(plan.name, style: AppText.h3),
+                      Text(plan.name, style: AppText.bodyStrong),
                       Text('${plan.washes} × $serviceTitle', style: AppText.small),
-                      const SizedBox(height: 8),
-                      Text(rupees(plan.amount), style: AppText.h1),
+                      const SizedBox(height: 4),
+                      Text(rupees(plan.amount), style: AppText.h2),
                       Text('${rupees(plan.perWash)} per wash', style: AppText.smallStrong.copyWith(color: AppColors.green)),
                       if (saving > 0)
                         Text('Save up to ${rupees(saving)} on hatchback prices', style: AppText.tiny),
                     ],
                   ),
                 ),
-                SizedBox(width: 110, child: PrimaryButton(label: 'Buy', loading: busy, onPressed: onBuy)),
+                SizedBox(width: 90, child: PrimaryButton(label: 'Buy', loading: busy, onPressed: onBuy)),
               ],
             ),
           ),

@@ -35,26 +35,26 @@ class ServiceCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Photo(Photos.forService(service.name), width: 92, height: 92),
-                const SizedBox(width: 12),
+                Photo(Photos.forService(service.name), width: 78, height: 78),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(service.title, style: AppText.h3),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       PriceLine(selection.price, prefix: selection.exact ? '' : 'from'),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 5),
                       ServiceProof(stats),
                       if (service.durationLabel.isNotEmpty) ...[
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.schedule_rounded, size: 14, color: AppColors.mute),
+                            const Icon(Icons.schedule_rounded, size: 13, color: AppColors.mute),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(
@@ -74,20 +74,24 @@ class ServiceCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 2, 14, 4),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
             child: Column(
               children: [
                 for (final item in service.inclusions.take(3)) Bullet(item),
               ],
             ),
           ),
-          const Divider(),
+          const Divider(height: 1),
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+            padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
             child: Row(
               children: [
                 Expanded(
                   child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      visualDensity: VisualDensity.compact,
+                    ),
                     onPressed: () => context.push(servicePath(service.name)),
                     child: const Text('View details'),
                   ),
@@ -95,7 +99,10 @@ class ServiceCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: FilledButton(
-                    style: FilledButton.styleFrom(minimumSize: const Size(0, 42)),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      visualDensity: VisualDensity.compact,
+                    ),
                     onPressed: selection.price.isKnown ? () => context.push(bookPath(service.name)) : null,
                     child: const Text('Book'),
                   ),

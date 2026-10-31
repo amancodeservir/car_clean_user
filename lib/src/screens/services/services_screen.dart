@@ -46,7 +46,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Services')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+        padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
           TextField(
@@ -63,15 +63,16 @@ class _ServicesScreenState extends State<ServicesScreen> {
                     ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 for (final group in _groups)
                   Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: 6),
                     child: ChoiceChip(
+                      visualDensity: VisualDensity.compact,
                       label: Text(group.$2),
                       selected: _group == group.$1,
                       selectedColor: AppColors.brand,
@@ -84,15 +85,15 @@ class _ServicesScreenState extends State<ServicesScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           AppCard(
             color: AppColors.brandWash,
             onTap: () => vehicle == null ? addVehicle(context) : pickVehicle(context),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
-                Icon(vehicleIcon(vehicle), size: 22),
-                const SizedBox(width: 10),
+                Icon(vehicleIcon(vehicle), size: 20),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     vehicle == null ? 'Add your vehicle to see exact prices' : 'Prices for ${vehicle.name}',
@@ -103,7 +104,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           if (services.isEmpty)
             const EmptyState(
               icon: Icons.search_off_rounded,
@@ -112,7 +113,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
             ),
           for (final service in services) ...[
             ServiceCard(service),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
           ],
         ],
       ),

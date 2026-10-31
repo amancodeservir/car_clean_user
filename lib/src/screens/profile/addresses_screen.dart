@@ -26,13 +26,14 @@ class AddressesScreen extends StatelessWidget {
               ),
             )
           : ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 16),
               children: [
                 for (final address in account.addresses)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: AppCard(
                       color: address.isDefault ? AppColors.brandWash : null,
+                      padding: const EdgeInsets.all(10),
                       onTap: address.isDefault
                           ? null
                           : () async {
@@ -45,18 +46,18 @@ class AddressesScreen extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(addressIcon(address.label), size: 24),
-                          const SizedBox(width: 12),
+                          Icon(addressIcon(address.label), size: 20),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    Text(address.label, style: AppText.title),
+                                    Text(address.label, style: AppText.bodyStrong),
                                     if (address.isDefault) ...[
                                       const SizedBox(width: 8),
-                                      Text('DEFAULT', style: AppText.tiny.copyWith(color: AppColors.green)),
+                                      Text('DEFAULT', style: AppText.tiny.copyWith(color: AppColors.green, fontWeight: FontWeight.bold)),
                                     ],
                                   ],
                                 ),
@@ -70,6 +71,7 @@ class AddressesScreen extends StatelessWidget {
                             ),
                           ),
                           IconButton(
+                            visualDensity: VisualDensity.compact,
                             tooltip: 'Remove',
                             onPressed: () async {
                               final ok = await confirm(
@@ -86,16 +88,17 @@ class AddressesScreen extends StatelessWidget {
                                 if (context.mounted) showMessage(context, errorText(error));
                               }
                             },
-                            icon: const Icon(Icons.delete_outline_rounded, color: AppColors.mute),
+                            icon: const Icon(Icons.delete_outline_rounded, size: 20, color: AppColors.mute),
                           ),
                         ],
                       ),
                     ),
                   ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
                   onPressed: () => addAddress(context),
-                  icon: const Icon(Icons.add_location_alt_outlined),
+                  icon: const Icon(Icons.add_location_alt_outlined, size: 18),
                   label: const Text('Add a new address'),
                 ),
               ],

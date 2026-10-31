@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../config.dart';
 
@@ -22,13 +25,35 @@ class ApiException implements Exception {
 /// The one HTTP client for the app. Holds the session token and turns every
 /// failure into an [ApiException] with a message fit to show the customer.
 class Api {
-  Api._();
+  Api._() {
+    _dio = Dio(
+      BaseOptions(
+        connectTimeout: _timeout,
+        receiveTimeout: _timeout,
+        sendTimeout: _timeout,
+      ),
+    );
+
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90,
+        ),
+      );
+    }
+  }
 
   static final instance = Api._();
 
   static const _timeout = Duration(seconds: 25);
 
-  final http.Client _client = http.Client();
+  late final Dio _dio;
 
   String? token;
 
@@ -55,44 +80,78 @@ class Api {
   }) async {
     var uri = Uri.parse('${AppConfig.apiBase}$path');
     if (query != null && query.isNotEmpty) uri = uri.replace(queryParameters: query);
-    final request = http.Request(method, uri)
-      ..headers['Accept'] = 'application/json'
-      ..headers['Content-Type'] = 'application/json; charset=UTF-8';
-    final auth = token;
-    if (auth != null && auth.isNotEmpty) request.headers['Authorization'] = 'Bearer $auth';
-    if (body != null) request.body = jsonEncode(body);
 
-    http.Response response;
+    final auth = token;
+    final headers = <String, dynamic>{
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+      if (auth != null && auth.isNotEmpty) 'Authorization': 'Bearer $auth',
+    };
+
+    Response<dynamic> response;
     try {
-      final streamed = await _client.send(request).timeout(_timeout);
-      response = await http.Response.fromStream(streamed).timeout(_timeout);
-    } on TimeoutException {
-      throw const ApiException('The server took too long to answer. Check your connection and try again.');
-    } on http.ClientException {
-      // package:http wraps socket errors (offline, DNS) in ClientException.
-      throw const ApiException('You appear to be offline. Check your connection and try again.');
+      response = await _dio.request<dynamic>(
+        uri.toString(),
+        data: body,
+        options: Options(
+          method: method,
+          headers: headers,
+          validateStatus: (status) => status != null && status >= 200 && status < 300,
+        ),
+      );
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw const ApiException(
+          'The server took too long to answer. Check your connection and try again.',
+        );
+      }
+
+      if (e.type == DioExceptionType.connectionError ||
+          e.error is SocketException) {
+        throw const ApiException(
+          'You appear to be offline. Check your connection and try again.',
+        );
+      }
+
+      final res = e.response;
+      if (res != null) {
+        final statusCode = res.statusCode ?? 0;
+        final decoded = _decodeResponse(res.data);
+        final message = '${decoded['message'] ?? ''}'.trim();
+        if (statusCode == 401 && auth != null && auth.isNotEmpty) {
+          onUnauthorized?.call();
+        }
+        throw ApiException(
+          message.isNotEmpty ? message : _fallback(statusCode),
+          statusCode: statusCode,
+        );
+      }
+
+      throw ApiException(
+        e.message?.isNotEmpty == true ? e.message! : 'Something went wrong',
+        statusCode: 0,
+      );
     }
 
-    Map<String, dynamic> decoded = const {};
-    if (response.body.isNotEmpty) {
+    return _decodeResponse(response.data);
+  }
+
+  static Map<String, dynamic> _decodeResponse(dynamic data) {
+    if (data == null) return const {};
+    if (data is Map<String, dynamic>) return data;
+    if (data is Map) return Map<String, dynamic>.from(data);
+    if (data is String && data.isNotEmpty) {
       try {
-        final value = jsonDecode(response.body);
-        if (value is Map) decoded = Map<String, dynamic>.from(value);
+        final value = jsonDecode(data);
+        if (value is Map<String, dynamic>) return value;
+        if (value is Map) return Map<String, dynamic>.from(value);
       } catch (_) {
-        decoded = const {};
+        return const {};
       }
     }
-
-    if (response.statusCode >= 200 && response.statusCode < 300) return decoded;
-
-    final message = '${decoded['message'] ?? ''}'.trim();
-    if (response.statusCode == 401 && auth != null && auth.isNotEmpty) {
-      onUnauthorized?.call();
-    }
-    throw ApiException(
-      message.isNotEmpty ? message : _fallback(response.statusCode),
-      statusCode: response.statusCode,
-    );
+    return const {};
   }
 
   static String _fallback(int status) {

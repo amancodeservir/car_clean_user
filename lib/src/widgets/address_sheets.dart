@@ -75,13 +75,13 @@ class _PickAddressSheet extends StatelessWidget {
     final city = context.watch<CatalogProvider>().city;
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Where should we come?', style: AppText.h2),
-            const SizedBox(height: 14),
+            Text('Where should we come?', style: AppText.h3),
+            const SizedBox(height: 10),
             if (signedIn)
               Flexible(
                 child: ListView(
@@ -89,8 +89,9 @@ class _PickAddressSheet extends StatelessWidget {
                   children: [
                     for (final address in account.addresses)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: 6),
                         child: AppCard(
+                          padding: const EdgeInsets.all(10),
                           color: address.isDefault ? AppColors.brandWash : null,
                           onTap: () async {
                             try {
@@ -101,19 +102,19 @@ class _PickAddressSheet extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(addressIcon(address.label), size: 22),
-                              const SizedBox(width: 12),
+                              Icon(addressIcon(address.label), size: 20),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(address.label, style: AppText.title),
+                                    Text(address.label, style: AppText.bodyStrong),
                                     const SizedBox(height: 2),
                                     Text('${address.address}, ${address.city}', style: AppText.small),
                                   ],
                                 ),
                               ),
-                              if (address.isDefault) const Icon(Icons.check_circle_rounded, color: AppColors.green),
+                              if (address.isDefault) const Icon(Icons.check_circle_rounded, size: 18, color: AppColors.green),
                             ],
                           ),
                         ),
@@ -123,21 +124,23 @@ class _PickAddressSheet extends StatelessWidget {
               ),
             if (signedIn)
               OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
                 onPressed: () async {
                   final added = await addAddress(context);
                   if (added != null && context.mounted) Navigator.pop(context, added);
                 },
-                icon: const Icon(Icons.add_location_alt_outlined),
+                icon: const Icon(Icons.add_location_alt_outlined, size: 18),
                 label: const Text('Add a new address'),
               ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             TextButton.icon(
+              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
               onPressed: () {
                 Navigator.pop(context);
                 context.push('/cities');
               },
-              icon: const Icon(Icons.location_city_rounded, size: 18),
-              label: Text('City: $city · Change'),
+              icon: const Icon(Icons.location_city_rounded, size: 16),
+              label: Text('City: $city · Change', style: AppText.small),
             ),
           ],
         ),

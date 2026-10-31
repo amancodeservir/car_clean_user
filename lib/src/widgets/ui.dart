@@ -121,7 +121,7 @@ Future<void> openLink(BuildContext context, String url) async {
 // Building blocks
 
 class AppCard extends StatelessWidget {
-  const AppCard({super.key, required this.child, this.padding = const EdgeInsets.all(14), this.onTap, this.color});
+  const AppCard({super.key, required this.child, this.padding = const EdgeInsets.all(12), this.onTap, this.color});
 
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -130,7 +130,7 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(16);
+    final radius = BorderRadius.circular(14);
     return Material(
       color: color ?? Colors.white,
       borderRadius: radius,
@@ -323,13 +323,13 @@ class Bullet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: const EdgeInsets.only(top: 1), child: Icon(icon, size: 16, color: color)),
-          const SizedBox(width: 8),
-          Expanded(child: Text(text, style: AppText.body.copyWith(fontSize: 13))),
+          Padding(padding: const EdgeInsets.only(top: 2), child: Icon(icon, size: 14, color: color)),
+          const SizedBox(width: 7),
+          Expanded(child: Text(text, style: AppText.body.copyWith(fontSize: 12.5))),
         ],
       ),
     );

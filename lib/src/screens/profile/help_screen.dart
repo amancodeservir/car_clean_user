@@ -35,35 +35,35 @@ class HelpScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Help and support')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(14, 8, 14, 16),
         children: [
-          Text('Talk to us', style: AppText.h3),
-          const SizedBox(height: 10),
+          Text('Talk to us', style: AppText.bodyStrong),
+          const SizedBox(height: 8),
           Row(
             children: [
               _Contact(Icons.call_rounded, 'Call', () => openLink(context, 'tel:${AppConfig.supportPhone}')),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               _Contact(Icons.chat_rounded, 'WhatsApp', () => openLink(context, 'https://wa.me/${AppConfig.supportWhatsApp}')),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               _Contact(Icons.mail_rounded, 'Email', () => openLink(context, 'mailto:${AppConfig.supportEmail}')),
             ],
           ),
-          const SizedBox(height: 10),
-          Text('${AppConfig.supportPhoneLabel} · ${AppConfig.supportEmail}', style: AppText.small, textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text('For a booking, the fastest way is "Chat with us" on the booking page.', style: AppText.small, textAlign: TextAlign.center),
-          const SizedBox(height: 22),
-          Text('Common questions', style: AppText.h3),
-          const SizedBox(height: 6),
+          Text('${AppConfig.supportPhoneLabel} · ${AppConfig.supportEmail}', style: AppText.tiny, textAlign: TextAlign.center),
+          const SizedBox(height: 4),
+          Text('For a booking, the fastest way is "Chat with us" on the booking page.', style: AppText.tiny, textAlign: TextAlign.center),
+          const SizedBox(height: 16),
+          Text('Common questions', style: AppText.bodyStrong),
+          const SizedBox(height: 4),
           for (final (question, answer) in _faq)
             Theme(
               data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
                 tilePadding: EdgeInsets.zero,
-                childrenPadding: const EdgeInsets.only(bottom: 12),
+                childrenPadding: const EdgeInsets.only(bottom: 8),
                 expandedAlignment: Alignment.centerLeft,
-                title: Text(question, style: AppText.title),
-                children: [Text(answer, style: AppText.body)],
+                title: Text(question, style: AppText.bodyStrong),
+                children: [Text(answer, style: AppText.small)],
               ),
             ),
         ],
@@ -84,16 +84,16 @@ class _Contact extends StatelessWidget {
     return Expanded(
       child: AppCard(
         onTap: onTap,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Column(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 36,
+              height: 36,
               decoration: const BoxDecoration(color: AppColors.brand, shape: BoxShape.circle),
-              child: Icon(icon, color: Colors.white),
+              child: Icon(icon, color: Colors.white, size: 18),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(label, style: AppText.smallStrong),
           ],
         ),

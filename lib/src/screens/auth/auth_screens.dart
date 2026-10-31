@@ -41,7 +41,6 @@ class _AuthScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -53,30 +52,31 @@ class _AuthScaffold extends StatelessWidget {
         ),
         child: SafeArea(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(22, 8, 22, 28),
+            padding: const EdgeInsets.fromLTRB(18, 4, 18, 20),
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
               Align(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
+                  visualDensity: VisualDensity.compact,
                   onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
                   icon: const Icon(Icons.arrow_back_rounded),
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               Center(
                 child: Container(
-                  width: 150,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
+                  width: 120,
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
                   child: Image.asset(Photos.logo, fit: BoxFit.contain),
                 ),
               ),
-              const SizedBox(height: 22),
-              Text(title, style: AppText.h1, textAlign: TextAlign.center),
-              const SizedBox(height: 6),
-              Text(subtitle, style: AppText.body, textAlign: TextAlign.center),
-              const SizedBox(height: 26),
+              const SizedBox(height: 14),
+              Text(title, style: AppText.h2, textAlign: TextAlign.center),
+              const SizedBox(height: 4),
+              Text(subtitle, style: AppText.small, textAlign: TextAlign.center),
+              const SizedBox(height: 16),
               ...children,
             ],
           ),
